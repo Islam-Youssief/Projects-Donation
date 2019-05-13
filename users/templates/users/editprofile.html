@@ -1,0 +1,85 @@
+{% extends "layout/layout.html" %}
+{% load static %}
+{% load tag_library %}
+{% block content %}
+<!--include nav bar-->
+{% include "layout/Navbar.html" %}
+<div style="height:65px;"></div>
+<!--for error -->
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="container">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Error !</strong> {{message}}.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% if message.tags == 'success' %}
+<div class="container">
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>Sucess !</strong> {{message}}.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+<div class="container">
+    <div class="row offset-3 col-6">
+        <center>
+            <div class="col-md-4">
+                <img src="{{user.profile.image.url}}" alt="" width="300" height="300" class="rounded-circle">
+            </div>
+            <div class="col-md-8">
+                <h3 class="h2 text-muted text-center">Edit Information {{user.username}} </h3>
+                <form class="mb-3" action="{% url 'users:edit' user.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input type="text" placeholder="Username" name="username" class="form-control" value="{{user.username}}">
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md">
+                            <input type="text" placeholder="First Name" class="form-control" name="first_name" value="{{user.first_name}}">
+                        </div>
+                        <div class="col-md">
+                            <input type="text" placeholder="Last Name" class="form-control" name="last_name" value="{{user.last_name}}">
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>User Email</label>
+                        <input type="text" disabled placeholder="Email Address" class="form-control" value="{{user.email}}">
+                    </div>
+                    <div class="form-group">
+                        <label>User Facebook</label>
+                        <input type="url" placeholder=" face book url" class="form-control" name="facebook" value="{{user.profile.facebook|default_if_none:''}}">
+                    </div>
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" placeholder=" country" class="form-control" name="country" value="{{user.profile.country}}">
+                    </div>
+                    <div class="form-group">
+                        <label>Birth Date</label>
+                        <input type="date" placeholder=" face book url" class="form-control" name="birth_date" value="{{user.profile.birth_date|date:'Y-m-d'|default_if_none:''}}">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" placeholder="phonenumber" class="form-control" name="phone" value="{{user.profile.phone|default_if_none:''}}">
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="validatedCustomFile" name="image">
+                        <label class="custom-file-label" for="validatedCustomFile">Choose Image</label>
+                    </div>
+                    <button class="btn btn-primary btn-lg mt-2 btn-block" type="submit">update</button>
+                </form>
+            </div>
+    </div>
+</div>
+</center>
+<!--end-->
+{% endblock %}
+<!--file javascript-->

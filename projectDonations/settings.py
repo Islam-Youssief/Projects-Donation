@@ -86,8 +86,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'projectDonation',
         'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'PASSWORD': '',
+        'HOST': '/opt/lampp/var/mysql/mysql.sock',
         'PORT': '3306',
     }
 }

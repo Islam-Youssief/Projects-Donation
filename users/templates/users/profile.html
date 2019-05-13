@@ -1,0 +1,290 @@
+{% extends "layout/layout.html" %}
+{% load static %}
+{% load tag_library %}
+<!--include nav bar-->
+{% block content %}
+{% include "layout/Navbar.html" %}
+<div style="height:65px;"></div>
+{% block style %}
+<!--===============================================================================================-->
+<link rel="icon" type="image/png" href="{% static 'users/images/icons/favicon.ico'%}" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="{% static 'users/css/profilePage.css'%}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="{% static 'users/vendor/bootstrap/css/bootstrap.min.css'%}">
+<!--===============================================================================================-->
+{% endblock %}
+<!--for error -->
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="container">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Error !</strong> {{message}}.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% if message.tags == 'success' %}
+<div class="container">
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>Sucess !</strong> {{message}}.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card hovercard">
+                <div class="cardheader" style="background-image: url('{% static 'users/images/userbg.jpg'%}')">
+                </div>
+                <div class="avatar">
+                    {% if userprofile.profile.image %}
+                    <img src="{{ userprofile.profile.image.url }}" width="300" height="300" class="img-raised rounded-circle img-fluid">
+                    {% else %}
+                    <img src="{% static 'users/images/defaultUser.png' %}" width="300" height="300" class="img-raised rounded-circle img-fluid">
+                    {% endif %}
+                    {% if flag %}
+                    {% endif %}
+                </div>
+                <div class="info">
+                    <div class="title">
+                        {{userprofile.username}}
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.first_name}} {{userprofile.last_name}}</h3>
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.email }}</h3>
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.profile.facebook|default_if_none:'-------'}}</h3>
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.profile.country|default_if_none:'-------'}}</h3>
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.profile.country|default_if_none:'-------'}}</h3>
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.profile.birth_date|default_if_none:'-------'}}</h3>
+                    </div>
+                    <div class="desc">
+                        <h3>{{userprofile.profile.phone|default_if_none:'-------'}}</h3>
+                    </div>
+                    <div class="desc">
+                        {% if flag %}
+                        <button type="button" style="width:15%;" class="btn btn-danger" data-toggle="modal" data-target="#remove" data-whatever="@mdo">Delete Account </button>
+                        <div class="text-center">
+                            <a class="" href="{% url 'users:edit' user.id %}"><button type="button" style="width:15%;" class="btn btn-info mt-2" data-toggle="modal" data-target="#remove" data-whatever="@mdo">Edit Account </button>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <h4 class="h4 mb-4 text-center text-muted"> All Donations : <span class="badge badge-pill badge-info">{{scount}}</span> </h4>
+                <div class="row">
+                    {% for project in suppliers %}
+                    <div class="col-md-4">
+                        <div class="card w-100 shadow mb-5 bg-white rounded " style="min-height:400px;max-height:400px;">
+                            {% if project.project.first_Projectphoto %}
+                            <img src="{{project.project.first_Projectphoto.image.url}}" class="card-img-top w-100" height="100" alt="...">
+                            {% else %}
+                            <img src="{% static 'projects/image/001.jpg' %}" class="card-img-top w-100" height="100" alt="...">
+                            {% endif %}
+                            <div class="card-body pt-2 pb-0">
+                                <h5 class="card-title h4 text-info">{{project.project.title}}</h5>
+                                <h5 class="card-title text-secondary">Created By: <sapn class="badge badge-success">{{project.project.user.username}}</sapn>
+                                </h5>
+                                <p class="card-text" style="min-height:50px;max-height:50px;">
+                                    {{project.project.details|truncatechars:50}}
+                                    <button class="badge badge-light btn" data-toggle="modal" data-target="#model{{forloop.counter}}">Read more</button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="model{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="model{{forloop.counter}}Title" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="model{{forloop.counter}}Title">{{project.project.title}}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {{project.project.details}}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="card-body">
+                                <a href="{% url 'projects:detail' project.project.id %}" class="card-link">Details</a>
+                            </div>
+                            <div class="more-info">
+                                <h3 class="text-center">
+                                    <span class="badge badge-success w-100 "><i class="fas fa-money-bill-alt"></i> {{project.quanty}} $</span>
+                                </h3>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{project.project.get_date}}
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+                <!--end-->
+                <hr class="my-5 d-block">
+                <div class="">
+                    <!--start loop-->
+                    <h4 class="h4 mb-4 text-center text-muted"> All Projects : <span class="badge badge-pill badge-info">{{pcount}}</span> </h4>
+                    <div class="row">
+                        {% for project in userProject %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card w-100 shadow  mb-5 bg-white rounded " style="min-height:600px;max-height:600px;">
+                                {% if project.first_Projectphoto %}
+                                <img src="{{project.first_Projectphoto.image.url}}" class="card-img-top w-100" height="200" alt="...">
+                                {% else %}
+                                <img src="{% static 'projects/image/001.jpg' %}" class="card-img-top w-100" height="200" alt="...">
+                                {% endif %}
+                                <div class="card-body pt-2 pb-0">
+                                    <h5 class="card-title h4 text-info">{{project.title}}</h5>
+                                    <h5 class="card-title text-secondary">Created By: <sapn class="badge badge-info">{{project.user.username}}</sapn>
+                                    </h5>
+                                    <p class="card-text" style="min-height:100px;max-height:100px;">
+                                        {{project.details|truncatechars:200}}
+                                        <button class="badge badge-light btn" data-toggle="modal" data-target="#model3{{forloop.counter}}">Read more</button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="model3{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="model3{{forloop.counter}}Title" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="model2{{forloop.counter}}Title">{{project.title}}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {{project.details}}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p>
+                                </div>
+                                <div class="card-body pb-0">
+                                    <a href="{% url 'projects:detail' project.id %}" class="card-link">Details</a>
+                                    <!--testing-->
+                                    {% if project.checkTarget %}
+                                    {% if flag %}
+                                    <a href="{% url 'projects:deleteProject' project.id %}" class="btn btn-danger">Delete</a>
+                                    {% else %}
+                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#dnonate{{forloop.counter}}" data-whatever="@mdo">Donate</button>
+                                    {% endif %}
+                                    {% else %}
+                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#dnonate{{forloop.counter}}" data-whatever="@mdo">Donate</button>
+                                    {% endif %}
+                                    <!--end-->
+                                    <!--model-->
+                                    <div class="modal fade" id="dnonate{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="dnonate{{forloop.counter}}Label" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="dnonate{{forloop.counter}}Label">New Donate To {{project.title}}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{% url 'projects:donate' project.id %}" method="post" id="donta">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <label for="recipient-name" class="col-form-label">Recipient To :</label>
+                                                            <input type="text" class="form-control" disabled id="recipient-name" value="{{project.user.username}}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Qunaty oF Many</label>
+                                                            <input type="number" class="form-control" required name="quanty" placeholder="Enter qunaty of mony">
+                                                        </div>
+                                                        <input type="submit" class="btn btn-primary" value="Donate">
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="more-info">
+                                    <div class="row no-gutters ">
+                                        <div class="col-md-6 border p-1 ">
+                                            <i class="fas fa-star mr-3"></i>
+                                            <span class="badge badge-warning">{{project.rating.rate__avg|default_if_none:0|to_int}}</span>
+                                        </div>
+                                        <div class="col-md-6 border p-1 ">
+                                            <i class="fas fa-users mr-3"></i>
+                                            <span class="badge badge-success">{{project.supplierCount|default_if_none:0|to_int}}</span>
+                                        </div>
+                                        <div class="col-md-6 border p-1 ">
+                                            <i class="fas fa-money-check-alt fa-1x mr-3"></i>
+                                            <span class="badge badge-success mr-3">{{project.SupllierMoney.quanty__sum|default_if_none:0|to_int}} $</span>
+                                        </div>
+                                        <div class="col-md-6 border p-1  ">
+                                            <i class="fas fa-business-time mr-3"></i>
+                                            <span class="badge badge-success">{{project.SupllierMoney.quanty__sum|default_if_none:0|to_int|sub:project.totalTarget}} $</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    {{project.get_date}}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal fade" id="remove" tabindex="-1" role="dialog" aria-labelledby="removeLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="removeLabel">Are you sure --({{userprofile.username}})-- </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'users:delete' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Password :</label>
+                                        <input type="password" class="form-control" name="password" value="" placeholder="enter password">
+                                    </div>
+                                    <input type="submit" class="btn btn-primary" value="Delete">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'users/vendor/jquery/jquery-3.2.1.min.js'%}"></script>
+<script src="{% static 'users/vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+{% endblock %}

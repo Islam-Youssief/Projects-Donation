@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from users.forms import *
 from projects.models import *
+# from users.forms import UserFormEdit, profileFormEdit, UserFormAdd, UserFormPassword, userLoginForm
 from .tokens import account_activation_token
 
 
@@ -45,7 +46,7 @@ def signup_new_user(request):
                     mail_subject, message, to=[to_email]
                 )
                 email.send()
-                messages.success(request, "you have sucessfully Registered your account.. "
+                messages.success(request, "sucess Register -- Welcom -- "
                                           "Please confirm your email address to complete the registration  ")
                 return HttpResponse('<center><h1>A confirmation Email was sent to your email .. </h1></center>')
             else:
@@ -77,6 +78,25 @@ def profile(request, uid):
         "scount": user2.supplier_set.count()
     }
     return render(request, "users/profile.html", context)
+
+
+# delete account
+@login_required()
+def deleteAccount(request):
+    user2 = request.user
+    form = UserFormPassword(request.POST)
+    if form.is_valid():
+        print("wwww")
+        user = authenticate(username=user2.username,
+                            password=form.cleaned_data.get("password"))
+        if user is not None:
+            user.delete()
+            messages.success(request, "Delete Account Sucess")
+            return redirect("/projects/home")
+        else:
+            messages.error(request, "Enter Valid password ")
+    messages.error(request, form.errors)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 # logout
@@ -117,6 +137,32 @@ def loginuser(request):
             return render(request, "users/login.html", context)
     else:
         return redirect("projects:home")
+
+
+# edit profile
+@login_required()
+def editprofile(request, uid):
+    user2 = get_object_or_404(User, id=uid)
+    categories = Categories.objects.all()
+    context = {
+        "userprofile": user2,
+        "categories": categories,
+    }
+    if request.POST:
+        formmuser = UserFormEdit(request.POST, instance=user2)
+        formprofile = profileFormEdit(
+            request.POST, instance=user2.account, files=request.FILES)
+        if formprofile.is_valid() and formmuser.is_valid():
+            formmuser.save()
+            formprofile.save()
+            messages.success(request, "Update information Success")
+            return redirect("users:profile", user2.id)
+        else:
+            messages.error(request, formprofile.errors)
+            messages.error(request, formmuser.errors)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        return render(request, "users/editprofile.html", context)
 
 
 # testing
