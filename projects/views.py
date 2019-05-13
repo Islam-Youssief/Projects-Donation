@@ -24,13 +24,16 @@ def project_details(requset,id):
 
 #aml
 
-def highestFiveRatedProjects(request):
-    data = Project.objects.all().order_by('start_date')[:5]
-    #rated = ProjectRate.objects.filter(project_id=1).select_related() 
-    return render(request,'index.html',{'latestProject':data})
+def index(request):
+    test=ProjectRate.objects.raw('''SELECT projects_projectrate.id, projects_projectrate.rate 
+                                    FROM projects_project JOIN projects_projectrate
+                                    WHERE projects_project.id = projects_projectrate.project_id
+                                    ORDER BY projects_projectrate.rate 
+                                    DESC LIMIT 5''')
 
-def latestFiveProjects(request):
     data = Project.objects.all().order_by('start_date')[:5]
     #rated = ProjectRate.objects.filter(project_id=1).select_related() 
-    return render(request,'index.html',{'latestProject':data})
+    return render(request,'index.html',{'latestProject':data,
+                                        'hightLatestProject':test
+                })
     # to enter new category <a href=" {%url 'my_category'  %}"> category </a>   47 -- 3:11 min

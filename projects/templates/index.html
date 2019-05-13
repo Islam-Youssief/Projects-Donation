@@ -82,6 +82,34 @@
     </a>
 </div>
 
+
+<div class="container">
+    <div class="row">
+        <h3>
+            highest five rated running projects
+        </h3>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">rate</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for i in hightLatestProject %}
+                <tr>
+                    <td>{{ i.rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+
 <div class="container">
     <div class="row">
         <h3>
@@ -99,15 +127,15 @@
 
             <tbody>
                 {% for i in latestProject %}
-                    <tr>
-                        <td>{{ i.project_name }}</td>
-                        <td>{{ i.details }}</td>
-                        <td>{{ i.start_date }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ i.project_name }}</td>
+                    <td>{{ i.details }}</td>
+                    <td>{{ i.start_date }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
-            
+
     </div>
 </div>
 

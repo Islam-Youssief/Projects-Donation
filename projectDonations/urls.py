@@ -17,10 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from . import settings
 from projects import views
-from projects.views import latestFiveProjects
+from projects.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/',include('projects.urls')),
-    path('', latestFiveProjects),
+    path('', index),
 ]
