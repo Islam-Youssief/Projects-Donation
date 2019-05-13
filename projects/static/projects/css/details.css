@@ -1,5 +1,15 @@
 .head{
     color:green;
     text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.projectDetails{
+    margin-top: 50px;
+    margin-left: 50px;
+    background-color: rgba(157, 235, 137, 0.466);
+    padding: 15px;
+    border-radius: 15px;
+}
+.star {
+    font-size: 20px;
 }

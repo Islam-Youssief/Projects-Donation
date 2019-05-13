@@ -64,23 +64,23 @@
   </a>
 </div>
 {% comment %} // {% endcomment %}
-  <div class="col-5">
+  <div class="col-5 projectDetails">
     <div class="row">
         <div class="col-12">
-                        <h2>project name:{{ project.project_name }}</h2>
                         <h4>Category : {{ project.category }}</h4>
+                                         <h4>project owner : {{ project.owner.first_name }} {{ project.owner.last_name }}</h4>
                         <h4 class="float-left">Average rating : </h4>
                         <div>
-                        {{ avg_rate }}
+                        {{ avg_rate }} <span class="star yellow-text text-darken-2">★</span>
                             {% comment %} {%for i in avg_rate%}
                             <span class="star yellow-text text-darken-2">★</span>
                             {%endfor%} {% endcomment %}
                         </div>
-                        <h4>project owner : {{ project.owner.first_name }} {{ project.owner.last_name }}</h4>
+      
                         <h3>project target : {{project.target}}</h3> 
                         <p><strong>Details : </strong>{{ project.details }}</p>
-                        <h2>start date:{{project.start_date}}</h2>
-                        <h2>end date:{{project.end_date}}</h2>
+                        <h5><span>start date:</span>{{project.start_date}}</h5>
+                        <h5><span>end date:</span>{{project.end_date}}</h5>
         </div>
     </div>
   </div>
