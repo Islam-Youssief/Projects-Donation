@@ -167,11 +167,15 @@
     </div>
 </div>
  <div class="projectDetails col-12">  
-   <div class="tags">
-                        {%for tag in project.tags.all %}
+ <div>
+                        {% comment %} {%for tag in project.tags.all %}
                         <span class="tag">#{{ tag }}</span>
                         {%endfor%}
                     </div>
+                    <ul>
+                    <li> {{ project.tags}}</li>
+                    </ul> {% endcomment %}
+                 
 
 </div>
 </div>

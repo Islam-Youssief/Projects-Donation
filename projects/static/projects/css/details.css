@@ -55,7 +55,7 @@ span{
 
 .rate-area > input:checked ~ label {
     color: gold;
-    text-shadow: 1px 1px #c60;
+    text-shadow: 1px 1px rgb(226, 118, 11);
     font-size: 220% !important;
 }
 
