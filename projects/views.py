@@ -3,27 +3,42 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
 from django.shortcuts import redirect, render
+from .forms import AddCommentForm
 
 
 # Create your views here.
 
 
-def project_details(requset, id):
+def project_details(request, id):
     project = Project.objects.get(id=id)
     avg_rate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
     if avg_rate['rate__avg'] == None:
         avg_rate['rate__avg'] = "0"
     comments = list(project.comment_set.values())
+    # Adding Comments
+    if request.method == 'GET':
+        commentForm = AddCommentForm()
+    else:
+        commentForm = AddCommentForm(request.POST)
+        print(commentForm.is_valid())
+        if commentForm.is_valid():
+            comment = Comment()
+            print(request.POST)
+            comment.comment = request.POST['comment']
+            comment.user_id = 2             #Logged in user
+            comment.project_id = id
+            comment.save()
    
     context= {
         "project":  project,
         "avg_rate":  range(int(avg_rate['rate__avg'])),
         "stars": range((5-int(avg_rate['rate__avg']))),
-        "comments":comments
+        "comments":comments,
+        "comment": commentForm
     }
-    return render(requset, 'projects/project_page.html/', context)
+    return render(request, 'projects/project_page.html/', context)
 
 # aml
 
@@ -56,3 +71,18 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+
+# def add_comment(request, id):
+#     if request.method == 'GET':
+#         commentForm = AddCommentForm()
+#     else:
+#         commentForm = AddCommentForm(request.POST)
+#         print(commentForm.is_valid())
+#         if commentForm.is_valid():
+#             comment = Comment()
+#             print(request.POST)
+#             comment.comment = request.POST['comment']
+#             comment.user_id = 2
+#             comment.project_id = id
+#             comment.save()
+#     return render(request, 'projects/project_page.html', {'comment': commentForm})

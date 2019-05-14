@@ -99,7 +99,7 @@
           <div class="row">
         <div class="col-7">
            
-            <form method="post" action="addcomment">
+            <form method="POST" action="">
                 {% csrf_token %}
                 <div>
               <div class="col-12">
@@ -131,8 +131,7 @@
 
             <div class="col-12">
                 <div class="form-group">
-                     <input type="text" for="textarea1"  placeholder="Enter your comment" >
-                    
+                    {{comment.as_p}}
                 </div>
                 <input id="comment" type="submit" class="waves-light btn btn-block indigo lighten-3" value="comment" />
             </div>
