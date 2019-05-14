@@ -5,6 +5,8 @@ import math
 from django.db.models import Avg, Count, Q, Sum
 from .models import Project,ProjectRate,Comment,ProjectPictures, Category
 from django.shortcuts import redirect, render
+from taggit.models import Tag
+
 
 
 # Create your views here.
@@ -59,3 +61,4 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+  
