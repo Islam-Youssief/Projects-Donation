@@ -1,15 +1,80 @@
 .head{
-    color:green;
+    color:#426639de;
     text-align: center;
+    font-size: 50px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .projectDetails{
-    margin-top: 50px;
-    margin-left: 50px;
-    background-color: rgba(157, 235, 137, 0.466);
-    padding: 15px;
+    margin-top: 20px;
+    background-color: #7ccc6888;
+   padding: 50px;
+   padding-left: 70px;
     border-radius: 15px;
+   width: 1050px;
+
+   
 }
+.right{
+    padding-right: 300px;
+}
+
 .star {
     font-size: 20px;
+    color: rgb(250, 183, 0)	;
+}
+span{
+    color: rgb(216, 76, 33);
+}
+.rate-area {
+    float: left;
+    border-style: none;
+}
+/* 
+.rate-area:not(:checked) > input {
+    position: absolute;
+    top: -9999px;
+} */
+
+.rate-area:not(:checked) > label {
+    float: right;
+    width: 1em;
+    padding: 0 0.1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 220%;
+    line-height: 1.2;
+    color: lightgrey;
+    text-shadow: 1px 1px #bbb;
+}
+
+.rate-area:not(:checked) > label:before {
+    content: "★ ";
+}
+
+.rate-area > input:checked ~ label {
+    color: gold;
+    text-shadow: 1px 1px #c60;
+    font-size: 220% !important;
+}
+
+.rate-area:not(:checked) > label:hover,
+.rate-area:not(:checked) > label:hover ~ label {
+    color: gold;
+}
+
+.rate-area > input:checked + label:hover,
+.rate-area > input:checked + label:hover ~ label,
+.rate-area > input:checked ~ label:hover,
+.rate-area > input:checked ~ label:hover ~ label,
+.rate-area > label:hover ~ input:checked ~ label {
+    color: gold;
+    text-shadow: 1px 1px goldenrod;
+}
+
+.rate-area > label:active {
+    position: relative;
+    top: 2px;
+    left: 2px;
 }

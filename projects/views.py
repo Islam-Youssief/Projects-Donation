@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project, ProjectRate, Comment, Category
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category
 from django.shortcuts import redirect, render
 
 
@@ -15,10 +15,13 @@ def project_details(requset, id):
     avg_rate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
     if avg_rate['rate__avg'] == None:
         avg_rate['rate__avg'] = "0"
-
-    context = {
+    comments = list(project.comment_set.values())
+   
+    context= {
         "project":  project,
-        "avg_rate": avg_rate
+        "avg_rate":  range(int(avg_rate['rate__avg'])),
+        "stars": range((5-int(avg_rate['rate__avg']))),
+        "comments":comments
     }
     return render(requset, 'projects/project_page.html/', context)
 
