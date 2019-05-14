@@ -3,12 +3,41 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
+from projects.forms import ProjectForm , PictureForm
+from django.forms import modelformset_factory
 from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
-from django.shortcuts import redirect, render
 from .forms import AddCommentForm
 
 
-# Create your views here.
+
+# nourhan
+def createProject(request):
+    
+    ImageFormSet = modelformset_factory(ProjectPictures, form=PictureForm, extra=3) 
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=ProjectPictures.objects.none())
+        if form.is_valid() and formset.is_valid: 
+            project_form = form.save(commit=False)
+            project_form.save()
+            # field = project_form.cleaned_data['tags']
+            # tags =  request.POST['tags'].split(',')
+            form.save_m2m()
+
+            for pictureForm in formset.cleaned_data:
+                if pictureForm:
+                    image = pictureForm['picture']
+                    photo = ProjectPictures(project=project_form, picture=image)
+                    photo.save()
+
+            ### user profile page
+            return HttpResponse("project added and redirect to user profile");
+    else:
+        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
+        project_form = ProjectForm();
+        return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
+
+
 
 
 def project_details(request, id):
