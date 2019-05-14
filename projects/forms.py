@@ -4,6 +4,9 @@ from django.db import models
 from .models import Project , ProjectPictures
 
 
+class AddCommentForm(forms.Form):
+    comment = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter Your Comment Here...'}), max_length=100, required = True)
+
 class DateInput(forms.DateInput):
     input_type = 'date'
 
