@@ -155,7 +155,7 @@
                 {% for i in allCategories %}
                 <tr>
                     <td><a>{{ i.id }}</a></td>
-                    <td><a href="">{{ i.category_name }}</a></td>
+                    <td><a href="/category/{{ i.id }}">{{ i.category_name }}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -164,6 +164,32 @@
     </div>
 </div>
 
+<div class="container">
+        <div class="row">
+            <h3>
+                latest 5 featured projects
+            </h3>
+    
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Project Name</th>
+                        <th scope="col">Peoject Details</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    {% for f in featuredProjects %}
+                    <tr>
+                        <td><a>{{ f.project_name }}</a></td>
+                        <td><a>{{ f.details }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+        </div>
+    </div>
 
 {% endblock %}
 {% block js %}
