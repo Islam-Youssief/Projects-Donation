@@ -39,6 +39,17 @@ def index(request):
 
     return render(request, 'index.html', {'hightLatestProject': rated,
                                           'latestProject': latest,
-                                          'allCategories': cat })
+                                          'allCategories': cat 
+                                          })
 
-    # to enter new category <a href=" {%url 'my_category'  %}"> category </a>   47 -- 3:11 min
+def displaydetails(request, id):
+    print(id)
+    cat2 = Category.objects.all()
+    details = {}
+    for c in cat2:
+        for key in c:
+            print(key)
+            print(c[key])
+            if key == 'id' and c[key] == id:
+                details = c
+    return render(request, 'details.html', {'c': details})

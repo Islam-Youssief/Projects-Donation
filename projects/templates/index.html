@@ -146,6 +146,7 @@
         <table class="table table-dark">
             <thead>
                 <tr>
+                    <th scope="col">Number</th>
                     <th scope="col">Category Name</th>
                 </tr>
             </thead>
@@ -153,7 +154,8 @@
             <tbody>
                 {% for i in allCategories %}
                 <tr>
-                    <td>{{ i.category_name }}</td>
+                    <td><a>{{ i.id }}</a></td>
+                    <td><a href="">{{ i.category_name }}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -161,6 +163,7 @@
 
     </div>
 </div>
+
 
 {% endblock %}
 {% block js %}
