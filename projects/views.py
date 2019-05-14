@@ -3,6 +3,8 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category
+from django.shortcuts import redirect, render
 from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
 from . models import Project,ProjectRate,Comment,ProjectPictures, Category
@@ -93,14 +95,28 @@ def index(request):
 
     cat = Category.objects.all()
 
+    featured = Project.objects.raw('''SELECT projects_project.id, projects_project.project_name, projects_project.details
+                                        FROM projects_project
+                                        WHERE is_featured = 1
+                                        ORDER BY is_featured
+                                        LIMIT 5''')
+
     return render(request, 'index.html', {'hightLatestProject': rated,
                                           'latestProject': latest,
-                                          'allCategories': cat 
+                                          'allCategories': cat,
+                                          'featuredProjects': featured
                                           })
 
+
+cat2 = [
+    {"id": 1, "name": "book1"},
+    {"id": 2, "name": "book2"},
+]
+
+
 def displaydetails(request, id):
-    print(id)
-    cat2 = Category.objects.all()
+    # print(id)
+    #cat2 = Category.objects.all()
     details = {}
     for c in cat2:
         for key in c:

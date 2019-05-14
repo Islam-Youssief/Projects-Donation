@@ -25,7 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/',include('projects.urls')),
     path('', index),
-    #path('category_details/<int:id>/', cat_details),
     path('category/<int:id>', displaydetails)
 ]
 
