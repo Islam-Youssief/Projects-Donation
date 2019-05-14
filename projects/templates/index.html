@@ -108,8 +108,6 @@
     </div>
 </div>
 
-
-
 <div class="container">
     <div class="row">
         <h3>
@@ -131,6 +129,31 @@
                     <td>{{ i.project_name }}</td>
                     <td>{{ i.details }}</td>
                     <td>{{ i.start_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <h3>
+            list of the categories
+        </h3>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Category Name</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for i in allCategories %}
+                <tr>
+                    <td>{{ i.category_name }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
