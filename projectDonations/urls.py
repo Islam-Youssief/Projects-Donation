@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import settings
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from projects import views
 from projects.views import index, displaydetails
 
@@ -26,3 +28,6 @@ urlpatterns = [
     #path('category_details/<int:id>/', cat_details),
     path('category/<int:id>', displaydetails)
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

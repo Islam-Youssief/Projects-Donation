@@ -1,0 +1,57 @@
+{% extends 'projects/navbar.html'%} {% load static %} {% block css %}
+<title>{{ project.title }}</title>
+<link href="{% static 'projects/css/details.css' %}" rel="stylesheet" />
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+  crossorigin="anonymous"
+/>
+
+{% endblock %} {% block content %}
+<div class="container-fluid projectDetails">
+  <div class="row">
+    <div class="col-md-12 m-3">
+      <h1> <span> Create Project </span>
+       </h1>
+    </div>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="ml-5">
+    <p>Note: use comma separted for multiple tags </p>
+    {% csrf_token %} {% for field in project_form %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="control-label"> {{ field.label }}:</label>
+            </div>
+            <div class="col-md-10">
+              {{ field }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    
+    <div class="row">
+        <div class="col-md-12">
+            <h3> Upload Images </h3>
+        </div>
+    </div>
+    {{ picture_form.management_form }}
+    {% for form in picture_form %}
+    {{ form  }} <br />
+    {% endfor %}
+    <!--    end new 3-->
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %} {% block js %}
+<script
+  src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+  integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+  crossorigin="anonymous"
+></script>
+{% endblock %}

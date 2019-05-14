@@ -3,14 +3,40 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category
-from django.shortcuts import redirect, render
-from taggit.models import Tag
+from projects.forms import ProjectForm , PictureForm
+from django.forms import modelformset_factory
+from . models import Project,ProjectRate,Comment,ProjectPictures, Category
 
 
+# nourhan
+def createProject(request):
+    
+    ImageFormSet = modelformset_factory(ProjectPictures, form=PictureForm, extra=3) 
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=ProjectPictures.objects.none())
+        if form.is_valid() and formset.is_valid: 
+            project_form = form.save(commit=False)
+            project_form.save()
+            # field = project_form.cleaned_data['tags']
+            # tags =  request.POST['tags'].split(',')
+            form.save_m2m()
 
-# Create your views here.
+            for pictureForm in formset.cleaned_data:
+                if pictureForm:
+                    image = pictureForm['picture']
+                    photo = ProjectPictures(project=project_form, picture=image)
+                    photo.save()
 
+            ### user profile page
+            return HttpResponse("project added and redirect to user profile");
+    else:
+        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
+        project_form = ProjectForm();
+        return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
+
+
+#fatema
 
 def project_details(requset, id):
     project = Project.objects.get(id=id)
@@ -18,15 +44,19 @@ def project_details(requset, id):
     if avg_rate['rate__avg'] == None:
         avg_rate['rate__avg'] = "0"
     comments = list(project.comment_set.values())
-    # mylist = []
-    # for i in project:
-    #     if project.tags.all in project.tags.all(): 
-    #         mylist.append(project)
+    projectimage = project.projectpictures_set.first()
+    if projectimage != None : 
+        projectimage = projectimage.picture.url
+        picturesObjects = project.projectpictures_set.all()
+        pictures = []
+        for picture in picturesObjects:
+            pictures.append(picture.picture.url)
     context= {
         "project": project,
         "avg_rate": range(int(avg_rate['rate__avg'])),
         "stars": range((5-int(avg_rate['rate__avg']))),
-        "comments":comments
+        "comments":comments,
+        "pictures": pictures,
     }
     return render(requset, 'projects/project_page.html/', context)
 
@@ -61,4 +91,3 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
-  

@@ -22,7 +22,7 @@ class Project(models.Model):
     target = models.IntegerField()
     tags = TaggableManager()
     is_featured = models.BooleanField(default=False)
-    start_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
     def __str__(self):
