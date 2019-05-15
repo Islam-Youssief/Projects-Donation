@@ -1,16 +1,33 @@
-<body>
-    <h1>helooooo</h1>
-    <h1>helooooo</h1>
-    <h1>helooooo</h1>
-    <h1>helooooo</h1>
-    <h1>helooooo</h1>
+{% extends 'projects/navbar.html'%}
+{% load static %}
+{% block css %}
+<title>{{ project.title }}</title>
+<link href="{% static 'projects/css/details.css' %}" rel="stylesheet" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous">
 
-    <table>
-        {% for x in c %}
-        <tr>
-            <td><a>{{ x.id }}</a></td>
-            <td><a>{{ x.category_name }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
+{% endblock %}
+{% block content %}
+
+{% load static %}
+
+
+{% if c %}
+
+<p>id: {{ c.id }}</p>
+<p>name: {{ c.category_name }} </p>
+
+
+{% endif %}
+
 </body>
+
+</html>
+
+
+
+{% endblock %}
+{% block js %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+{% endblock %}

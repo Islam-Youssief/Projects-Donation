@@ -16,13 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import settings
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from projects import views
-from projects.views import index, displaydetails
+from projects.views import index , displaydetails, search
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/',include('projects.urls')),
+    
     path('', index),
-    #path('category_details/<int:id>/', cat_details),
-    path('category/<int:id>', displaydetails)
+    path('category/<int:id>', displaydetails),
+    #path("categorie/<int:cid>", view),
+    path("search", search),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

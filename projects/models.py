@@ -13,6 +13,7 @@ class Category(models.Model):
         return self.category_name
 
 
+
 class Project(models.Model):
     project_name = models.CharField(max_length=50)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
