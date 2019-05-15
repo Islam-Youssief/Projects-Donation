@@ -7,7 +7,7 @@ from .models import Project, ProjectRate, Comment, ProjectPictures, Category
 from django.shortcuts import redirect, render
 from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment, Donation
 from .forms import AddCommentForm
 
 
@@ -48,7 +48,7 @@ def project_details(request, id):
     if avg_rate['rate__avg'] == None:
         avg_rate['rate__avg'] = "0"
     comments = list(project.comment_set.values())
-    
+
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
@@ -62,13 +62,23 @@ def project_details(request, id):
             comment.user_id = 2             #Logged in user
             comment.project_id = id
             comment.save()
-   
+    # Checking on Donations
+    target = project.target * 0.25
+    amount = 0
+    donations = Donation.objects.filter(project_id = id)
+    for donation in donations:
+        amount = amount + donation.amount
+    
+
+
     context= {
         "project":  project,
         "avg_rate":  range(int(avg_rate['rate__avg'])),
         "stars": range((5-int(avg_rate['rate__avg']))),
         "comments":comments,
-        "comment": commentForm
+        "comment": commentForm,
+        "target": target,
+        "amount": amount
     }
     return render(request, 'projects/project_page.html/', context)
 
@@ -124,4 +134,9 @@ def report_project(request, id):
     project.user_id = 2
     project.is_reported = 0
     project.save()
+    return redirect('project_details', id)
+
+def cancel_project(request, id):
+    project = Project.objects.get(id=id)
+    project.delete()
     return redirect('project_details', id)

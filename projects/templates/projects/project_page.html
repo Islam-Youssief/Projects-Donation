@@ -11,7 +11,8 @@
    
 {% endblock  %}
 {% block content %}
-
+<h1>Target IS : {{target}}</h1>
+<h1>Amount IS : {{amount}}</h1>
 <h2 class="head">{{ project.project_name }}</h2>
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
@@ -84,12 +85,14 @@
                                 style="width:100%"> Report </button>
                         </form>
                        <br>
-                        <form method="post" action="cancel_project">
+                       {% if amount < target%}
+                        <form method="POST" action="{% url 'cancel_project' project.id %}">
                             {% csrf_token %}
                       
                             <button type="submit"  class="cancel waves-effect waves-light text-white red lighten-2 btn"
                                 style="width:100%"> Cancel project </button>
                         </form>
+                        {% endif %}
                       
                     </div>
      </div>
