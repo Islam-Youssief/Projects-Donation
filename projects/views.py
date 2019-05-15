@@ -3,9 +3,9 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from projects.forms import ProjectForm , PictureForm
+from projects.forms import ProjectForm , PictureForm , DonationForm
 from django.forms import modelformset_factory
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category ,Donation
 
 
 
@@ -85,3 +85,16 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+
+
+def projectDonate(request, id):
+    project = Project.objects.get(id=id)
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid(): 
+            donate_form = form.save(commit=False)
+            donate_form.save()
+            return HttpResponse("donations has been added and redirect to user profile");
+    else:
+        donate_form = DonationForm(initial={"project":id});
+        return render(request, 'projects/donate_project.html/',{'donate_form': donate_form , "project":  project}) 

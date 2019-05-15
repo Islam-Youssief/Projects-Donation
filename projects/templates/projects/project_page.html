@@ -34,11 +34,14 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
+<a href ={% url 'donate_project' project.id  %} class='btn btn-primary mt-5 mb-3'  >
+  Donate Project 
+</a>
 {% comment %} // {% endcomment %}
   <div class="projectDetails col-12">
- 
-    
+   
         {% comment %} < c> {% endcomment %}
+       
                     <div>
                         <h4><span>Category :</span> {{ project.category }}</h4>
                         <h4><span>project owner :</span> {{ project.owner.first_name }} {{ project.owner.last_name }}</h4>
