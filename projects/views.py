@@ -8,6 +8,7 @@ from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
 from . models import Project,ProjectRate,Comment,ProjectPictures, Category
 from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Donation, ReportedComment
 from .forms import AddCommentForm
 
 
@@ -59,6 +60,7 @@ def project_details(request, id):
         pictures = []
         for picture in picturesObjects:
             pictures.append(picture.picture.url)
+
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
@@ -72,14 +74,28 @@ def project_details(request, id):
             comment.user_id = 2             #Logged in user
             comment.project_id = id
             comment.save()
-   
+    # Checking on Donations
+    target = project.target * 0.25
+    amount = 0
+    donations = Donation.objects.filter(project_id = id)
+    for donation in donations:
+        amount = amount + donation.amount
+
+    #Getting All Comments
+    comments = Comment.objects.filter(project_id=id)
+    
+
+
     context= {
         "project": project,
         "avg_rate": range(int(avg_rate['rate__avg'])),
         "stars": range((5-int(avg_rate['rate__avg']))),
         "comments":comments,
         "pictures": pictures,
-        "comment": commentForm
+        "comment": commentForm,
+        "target": target,
+        "amount": amount,
+        "comments": comments
     }
     return render(request, 'projects/project_page.html/', context)
 
@@ -130,17 +146,28 @@ def displaydetails(request, id):
     return render(request, 'details.html', {'c': details})
    
 
-# def add_comment(request, id):
-#     if request.method == 'GET':
-#         commentForm = AddCommentForm()
-#     else:
-#         commentForm = AddCommentForm(request.POST)
-#         print(commentForm.is_valid())
-#         if commentForm.is_valid():
-#             comment = Comment()
-#             print(request.POST)
-#             comment.comment = request.POST['comment']
-#             comment.user_id = 2
-#             comment.project_id = id
-#             comment.save()
-#     return render(request, 'projects/project_page.html', {'comment': commentForm})
+def report_project(request, id):
+    project = ReportedProject()
+    project.project_id = id
+    project.user_id = 2
+    project.is_reported = 0
+    project.save()
+    return redirect('project_details', id)
+
+def cancel_project(request, id):
+    project = Project.objects.get(id=id)
+    project.delete()
+    return redirect('project_details', id)
+
+def delete_comment(request, id, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    comment.delete()
+    return redirect('project_details', id)
+
+def report_comment(request, id, comment_id):
+    comment = ReportedComment()
+    comment.comment_id = comment_id
+    comment.user_id = 2
+    comment.is_reported = 0
+    comment.save()
+    return redirect('project_details', id)

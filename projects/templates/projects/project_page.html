@@ -10,9 +10,9 @@
         
 {% endblock  %}
 {% block content %}
-{{  project.tags }}
+
 <h2 class="head">{{ project.project_name }}</h2>
-  {{pictures}}
+
 
   {%if pictures%}
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -55,31 +55,36 @@
                         {% comment %} <h5><span>end date:</span>{{project.end_date}}</h5> {% endcomment %}
                         <h5><span>End date:</span></h5><h7>{{project.end_date}}</h7>
                     
-        {% comment %} <avrage rating> {% endcomment %}
+        
+        {% comment %}  report project& cancal  {% endcomment %}
         </div>
    <div class="col-3 ">
    <br>
 
                     <div class="actions">
-                        <form method="post" action="report_project">
+                     
+                           <form method="POST" action="{% url 'report_project' project.id %}">
                             {% csrf_token %}
                         
                             <button type="submit"  class="report waves-effect waves-light  yellow darken-2 btn mb-1"
-                                style="width:100% ; border-radius:15px;"> Report project </button>
+                                style="width:100% ; border-radius:15px;"> Report project</button>
                         </form>
                        <br>
-                        <form method="post" action="cancel_project">
+                       {% if amount < target%}
+                        <form method="POST" action="{% url 'cancel_project' project.id %}">
                             {% csrf_token %}
                       
                             <button type="submit"  class="cancel waves-effect waves-light text-white red lighten-2 btn"
-                                style="width:100% ; border-radius:15px;">Cancel project </button>
+                                style="width:100% ; border-radius:15px;"> Cancel project </button>
                         </form>
+                        {% endif %}
                       
                     </div>
      </div>
 </div>
     
   </div>
+  {% comment %} <avrage rating> {% endcomment %}
   <div class="projectDetails col-12">
   {% if comments|length > 0 %}
                         <h4 clss="float-left"><span>Average rating :</span> </h4>
@@ -101,8 +106,7 @@
                         <h5>This project hasnot been rated yet</h5>
                         {%endif%}
   </div>
-    {% comment %}  report project& cancal  {% endcomment %}
- 
+    
                 {% comment %}  Add commint  {% endcomment %}
         <div class="projectDetails col-12">        
           <div class="row">
@@ -148,18 +152,20 @@
         </div>
             </form>
            
-           
+          {% for comment in comments %}
            <div class="projectDetails col-12">  
                 <div class="card-content light-green lighten-4">
-                   {% comment %} show commint {% endcomment %}
-                   <p>gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg</p>
+                   <p>{{comment.comment}}</p>
                 </div>
-                    <form method="post" action="" style="line-height:50px; margin-left:2%">
+                    <form method="POST" action="{% url 'delete_comment' project.id comment.id %}" style="line-height:50px; margin-left:2%">
                         {% csrf_token %}
                       
                         <button type="submit"  class="cancel waves-effect waves-light text-white red lighten-2 btn"
                              style="border-radius:15px;">Delete </button>
                     
+                             
+                    </form>
+                    <form method="POST" action="{% url 'report_comment' project.id comment.id %}" style="line-height:50px; margin-left:2%">
                         {% csrf_token %}
                       
                       
@@ -167,9 +173,8 @@
                             class="report waves-effect waves-light  yellow darken-2 btn mb-1"
                            style="border-radius:15px;"> Report </button>
                     </form>
-                  
-
             </div>
+            {% endfor %}
         
         </div>
     </div>
