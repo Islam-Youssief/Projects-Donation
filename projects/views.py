@@ -3,12 +3,9 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project, ProjectRate, Comment, ProjectPictures, Category
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
 from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
-from . models import Project,ProjectRate,Comment,ProjectPictures, Category
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Donation, ReportedComment
 from .forms import AddCommentForm
 
 
@@ -44,15 +41,10 @@ def createProject(request):
 
 def project_details(request, id):
     project = Project.objects.get(id=id)
-    avg_rate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
-    if avg_rate['rate__avg'] == None:
-        avg_rate['rate__avg'] = "0"
-    comments = list(project.comment_set.values())
-    # searching = DATA.get("search")
-    #          Projects.objects.filter(title=searching)
-    # projects = ProjectTage.objects.filter(tage=searching)
-    # searching = form.cleaned_data.get("search")
-    # projects = ProjectTage.objects.filter(tage=searching)
+    rates = list(project.projectrate_set.values())
+    avgRate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
+    if avgRate['rate__avg'] == None:
+        avgRate['rate__avg']= "0"    
     projectimage = project.projectpictures_set.first()
     if projectimage != None : 
         projectimage = projectimage.picture.url
@@ -88,9 +80,9 @@ def project_details(request, id):
 
     context= {
         "project": project,
-        "avg_rate": range(int(avg_rate['rate__avg'])),
-        "stars": range((5-int(avg_rate['rate__avg']))),
-        "comments":comments,
+        "avgRate": range(int(avgRate['rate__avg'])),
+        "stars": range((5-int(avgRate['rate__avg']))),
+        "rates":rates,
         "pictures": pictures,
         "comment": commentForm,
         "target": target,

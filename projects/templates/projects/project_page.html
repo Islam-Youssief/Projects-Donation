@@ -86,24 +86,24 @@
   </div>
   {% comment %} <avrage rating> {% endcomment %}
   <div class="projectDetails col-12">
-  {% if comments|length > 0 %}
-                        <h4 clss="float-left"><span>Average rating :</span> </h4>
+  
+                         {% if rates|length > 0 %}
+                        <h4 class="float-left"><span>Average rating :</span> </h4>
                         <div>
-                          {%for i in avg_rate%}
-                            <span class="star yellow-text">★</span>
+                            {%for i in avgRate%}
+                            <span class="star yellow-text text-darken-2">★</span>
                             {%endfor%}
                             {%for i in stars%}
                             <span class="star">☆</span>
                             {% endfor %}
-                          
                         </div>
-                      {%if comments|length > 1%}
-                        <p> ({{ comments|length }} users have rated this project)</p>
+                        {%if rates|length > 1%}
+                        <p> ({{ rates|length }} users have rated this project)</p>
                         {%else%}
-                        <p> (1 user has rated this project)</p>
+                        <p> (one has rated this project)</p>
                         {%endif%}
                         {%else%}
-                        <h5>This project hasnot been rated yet</h5>
+                        <h5>This project has not been rated yet</h5>
                         {%endif%}
   </div>
     
