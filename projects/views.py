@@ -4,13 +4,11 @@ import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
 from .models import Project, ProjectRate, Comment, ProjectPictures, Category
-from django.shortcuts import redirect, render
 from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
 from . models import Project,ProjectRate,Comment,ProjectPictures, Category
 from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
 from .forms import AddCommentForm
-
 
 
 # nourhan
@@ -49,6 +47,11 @@ def project_details(request, id):
     if avg_rate['rate__avg'] == None:
         avg_rate['rate__avg'] = "0"
     comments = list(project.comment_set.values())
+    # searching = DATA.get("search")
+    #          Projects.objects.filter(title=searching)
+    # projects = ProjectTage.objects.filter(tage=searching)
+    # searching = form.cleaned_data.get("search")
+    # projects = ProjectTage.objects.filter(tage=searching)
     projectimage = project.projectpictures_set.first()
     if projectimage != None : 
         projectimage = projectimage.picture.url

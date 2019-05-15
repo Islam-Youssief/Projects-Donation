@@ -10,7 +10,7 @@
         
 {% endblock  %}
 {% block content %}
-
+{{  project.tags }}
 <h2 class="head">{{ project.project_name }}</h2>
   {{pictures}}
 
@@ -42,7 +42,7 @@
   <div class="projectDetails">
 <div class="row">
  
- <div class="col-8">
+ <div class="col-9">
     
         {% comment %} < c> {% endcomment %}
                    
@@ -57,7 +57,9 @@
                     
         {% comment %} <avrage rating> {% endcomment %}
         </div>
-   <div class="col-4 justify-content-center">
+   <div class="col-3 ">
+   <br>
+
                     <div class="actions">
                         <form method="post" action="report_project">
                             {% csrf_token %}
