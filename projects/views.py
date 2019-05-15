@@ -3,14 +3,12 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project, ProjectRate, Comment, ProjectPictures, Category
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
 from django.shortcuts import redirect, render
 from projects.forms import ProjectForm, PictureForm
 from django.forms import modelformset_factory
 from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment
 from .forms import AddCommentForm
-from django.db.models import Q
-
 
 # nourhan
 def createProject(request):
@@ -38,17 +36,27 @@ def createProject(request):
             # user profile page
             return HttpResponse("project added and redirect to user profile")
     else:
-        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none())
-        project_form = ProjectForm()
-        return render(request, 'projects/create_project.html/', {'project_form': project_form, 'picture_form': picture_form})
+        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
+        project_form = ProjectForm();
+        return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
 
+
+#fatema
 
 def project_details(request, id):
     project = Project.objects.get(id=id)
-    avg_rate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
-    if avg_rate['rate__avg'] == None:
-        avg_rate['rate__avg'] = "0"
-    comments = list(project.comment_set.values())
+    rates = list(project.projectrate_set.values())
+    avgRate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
+    if avgRate['rate__avg'] == None:
+        avgRate['rate__avg']= "0"    
+    projectimage = project.projectpictures_set.first()
+    if projectimage != None : 
+        projectimage = projectimage.picture.url
+        picturesObjects = project.projectpictures_set.all()
+        pictures = []
+        for picture in picturesObjects:
+            pictures.append(picture.picture.url)
+
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
@@ -62,13 +70,28 @@ def project_details(request, id):
             comment.user_id = 2  # Logged in user
             comment.project_id = id
             comment.save()
+    # Checking on Donations
+    target = project.target * 0.25
+    amount = 0
+    donations = Donation.objects.filter(project_id = id)
+    for donation in donations:
+        amount = amount + donation.amount
 
-    context = {
-        "project":  project,
-        "avg_rate":  range(int(avg_rate['rate__avg'])),
-        "stars": range((5-int(avg_rate['rate__avg']))),
-        "comments": comments,
-        "comment": commentForm
+    #Getting All Comments
+    comments = Comment.objects.filter(project_id=id)
+    
+
+
+    context= {
+        "project": project,
+        "avgRate": range(int(avgRate['rate__avg'])),
+        "stars": range((5-int(avgRate['rate__avg']))),
+        "rates":rates,
+        "pictures": pictures,
+        "comment": commentForm,
+        "target": target,
+        "amount": amount,
+        "comments": comments
     }
     return render(request, 'projects/project_page.html/', context)
 
@@ -111,6 +134,7 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+   
 
 def search(request):
     form = SearchForm(request.GET)
@@ -148,3 +172,28 @@ def search(request):
 #             comment.project_id = id
 #             comment.save()
 #     return render(request, 'projects/project_page.html', {'comment': commentForm})
+def report_project(request, id):
+    project = ReportedProject()
+    project.project_id = id
+    project.user_id = 2
+    project.is_reported = 0
+    project.save()
+    return redirect('project_details', id)
+
+def cancel_project(request, id):
+    project = Project.objects.get(id=id)
+    project.delete()
+    return redirect('project_details', id)
+
+def delete_comment(request, id, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    comment.delete()
+    return redirect('project_details', id)
+
+def report_comment(request, id, comment_id):
+    comment = ReportedComment()
+    comment.comment_id = comment_id
+    comment.user_id = 2
+    comment.is_reported = 0
+    comment.save()
+    return redirect('project_details', id)
