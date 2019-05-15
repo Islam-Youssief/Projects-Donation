@@ -11,8 +11,6 @@
    
 {% endblock  %}
 {% block content %}
-<h1>Target IS : {{target}}</h1>
-<h1>Amount IS : {{amount}}</h1>
 <h2 class="head">{{ project.project_name }}</h2>
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
@@ -142,18 +140,18 @@
         </div>
             </form>
            
-           
+          {% for comment in comments %}
            <div class="projectDetails col-12">  
                 <div class="card-content light-green lighten-4">
-                   {% comment %} show commint {% endcomment %}
-                   <p>gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg</p>
+                   <p>{{comment.comment}}</p>
                 </div>
-                    <form method="post" action="" style="line-height:50px; margin-left:2%">
+                    <form method="POST" action="{% url 'delete_comment' project.id comment.id %}" style="line-height:50px; margin-left:2%">
                         {% csrf_token %}
                       
                         <button type="submit"  class="cancel waves-effect waves-light text-white red lighten-2 btn"
                              style="border-radius:10px;cursor:default"> Delete </button>
-                    
+                    </form>
+                    <form method="POST" action="{% url 'report_comment' project.id comment.id %}" style="line-height:50px; margin-left:2%">
                         {% csrf_token %}
                       
                       
@@ -161,9 +159,8 @@
                             class="report waves-effect waves-light  yellow darken-2 btn mb-1"
                            style="border-radius:10px;cursor:default"> Report </button>
                     </form>
-                  
-
             </div>
+            {% endfor %}
         
         </div>
     </div>

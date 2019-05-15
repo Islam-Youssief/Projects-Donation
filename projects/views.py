@@ -7,7 +7,7 @@ from .models import Project, ProjectRate, Comment, ProjectPictures, Category
 from django.shortcuts import redirect, render
 from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment, Donation
+from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Donation, ReportedComment
 from .forms import AddCommentForm
 
 
@@ -68,6 +68,9 @@ def project_details(request, id):
     donations = Donation.objects.filter(project_id = id)
     for donation in donations:
         amount = amount + donation.amount
+
+    #Getting All Comments
+    comments = Comment.objects.filter(project_id=id)
     
 
 
@@ -78,7 +81,8 @@ def project_details(request, id):
         "comments":comments,
         "comment": commentForm,
         "target": target,
-        "amount": amount
+        "amount": amount,
+        "comments": comments
     }
     return render(request, 'projects/project_page.html/', context)
 
@@ -139,4 +143,17 @@ def report_project(request, id):
 def cancel_project(request, id):
     project = Project.objects.get(id=id)
     project.delete()
+    return redirect('project_details', id)
+
+def delete_comment(request, id, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    comment.delete()
+    return redirect('project_details', id)
+
+def report_comment(request, id, comment_id):
+    comment = ReportedComment()
+    comment.comment_id = comment_id
+    comment.user_id = 2
+    comment.is_reported = 0
+    comment.save()
     return redirect('project_details', id)
