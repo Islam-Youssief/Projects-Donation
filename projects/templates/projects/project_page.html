@@ -10,7 +10,9 @@
         
 {% endblock  %}
 {% block content %}
-
+{% if reported_comments %}
+<h1>{{reported_comments}}</h1>
+{% endif %}
 <h2 class="head">{{ project.project_name }}</h2>
 
 

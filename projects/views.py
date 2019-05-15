@@ -3,20 +3,23 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
-from projects.forms import ProjectForm , PictureForm
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
+from django.shortcuts import redirect, render
+from projects.forms import ProjectForm, PictureForm
 from django.forms import modelformset_factory
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment
 from .forms import AddCommentForm
-
 
 # nourhan
 def createProject(request):
-    
-    ImageFormSet = modelformset_factory(ProjectPictures, form=PictureForm, extra=3) 
+
+    ImageFormSet = modelformset_factory(
+        ProjectPictures, form=PictureForm, extra=3)
     if request.method == 'POST':
         form = ProjectForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=ProjectPictures.objects.none())
-        if form.is_valid() and formset.is_valid: 
+        formset = ImageFormSet(request.POST, request.FILES,
+                               queryset=ProjectPictures.objects.none())
+        if form.is_valid() and formset.is_valid:
             project_form = form.save(commit=False)
             project_form.save()
             # field = project_form.cleaned_data['tags']
@@ -26,11 +29,12 @@ def createProject(request):
             for pictureForm in formset.cleaned_data:
                 if pictureForm:
                     image = pictureForm['picture']
-                    photo = ProjectPictures(project=project_form, picture=image)
+                    photo = ProjectPictures(
+                        project=project_form, picture=image)
                     photo.save()
 
-            ### user profile page
-            return HttpResponse("project added and redirect to user profile");
+            # user profile page
+            return HttpResponse("project added and redirect to user profile")
     else:
         picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
         project_form = ProjectForm();
@@ -63,7 +67,7 @@ def project_details(request, id):
             comment = Comment()
             print(request.POST)
             comment.comment = request.POST['comment']
-            comment.user_id = 2             #Logged in user
+            comment.user_id = 1  # Logged in user
             comment.project_id = id
             comment.save()
     # Checking on Donations
@@ -119,15 +123,9 @@ def index(request):
                                           })
 
 
-cat2 = [
-    {"id": 1, "name": "book1"},
-    {"id": 2, "name": "book2"},
-]
-
-
 def displaydetails(request, id):
     # print(id)
-    #cat2 = Category.objects.all()
+    cat2 = Category.objects.all()
     details = {}
     for c in cat2:
         for key in c:
@@ -138,13 +136,54 @@ def displaydetails(request, id):
     return render(request, 'details.html', {'c': details})
    
 
+def search(request):
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        mode = form.cleaned_data.get("mode")
+        searching = form.cleaned_data.get("search")
+        if mode == "1":
+            projects = taggit_tag.objects.filter(name=searching)
+            if projects:
+                projects = projects[0].project_all()
+        else:
+            projects = Project.objects.filter(project_name=searching)
+    categories = Category.objects.all()
+    context = {
+        "projects": projects,
+        "categories": categories,
+        "categieNmae": searching
+    }
+    return render(request, "projects/view.html", context)
+
+
+######### aml ########
+
+# def add_comment(request, id):
+#     if request.method == 'GET':
+#         commentForm = AddCommentForm()
+#     else:
+#         commentForm = AddCommentForm(request.POST)
+#         print(commentForm.is_valid())
+#         if commentForm.is_valid():
+#             comment = Comment()
+#             print(request.POST)
+#             comment.comment = request.POST['comment']
+#             comment.user_id = 2
+#             comment.project_id = id
+#             comment.save()
+#     return render(request, 'projects/project_page.html', {'comment': commentForm})
 def report_project(request, id):
-    project = ReportedProject()
-    project.project_id = id
-    project.user_id = 2
-    project.is_reported = 0
-    project.save()
-    return redirect('project_details', id)
+    reported_projects = ReportedProject.objects.filter(project_id = id)
+    user_reports = reported_projects.filter(user_id = 1)
+    if user_reports.count() > 0:
+        return redirect('project_details', id)
+    else:
+        project = ReportedProject()
+        project.project_id = id
+        project.user_id = 1
+        project.is_reported = 0
+        project.save()
+        return redirect('project_details', id)
 
 def cancel_project(request, id):
     project = Project.objects.get(id=id)
@@ -157,9 +196,14 @@ def delete_comment(request, id, comment_id):
     return redirect('project_details', id)
 
 def report_comment(request, id, comment_id):
-    comment = ReportedComment()
-    comment.comment_id = comment_id
-    comment.user_id = 2
-    comment.is_reported = 0
-    comment.save()
-    return redirect('project_details', id)
+    reported_comments = ReportedComment.objects.filter(comment_id = comment_id)
+    user_reports = reported_comments.filter(user_id = 1)
+    if user_reports.count() > 0:
+        return redirect('project_details', id)
+    else:
+        comment = ReportedComment()
+        comment.comment_id = comment_id
+        comment.user_id = 1
+        comment.is_reported = 0
+        comment.save()
+        return redirect('project_details', id)

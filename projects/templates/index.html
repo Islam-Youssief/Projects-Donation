@@ -47,13 +47,7 @@
     </a>
 </div> {% endcomment %}
 
-<div class="container">
-    <div class="row">
-        <h3>
-            latest five rated projects
-        </h3>
-    </div>
-</div>
+
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
@@ -165,31 +159,36 @@
 </div>
 
 <div class="container">
-        <div class="row">
-            <h3>
-                latest 5 featured projects
-            </h3>
-    
-            <table class="table table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">Project Name</th>
-                        <th scope="col">Peoject Details</th>
-                    </tr>
-                </thead>
-    
-                <tbody>
-                    {% for f in featuredProjects %}
-                    <tr>
-                        <td><a>{{ f.project_name }}</a></td>
-                        <td><a>{{ f.details }}</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    
-        </div>
+    <div class="row">
+        <h3>
+            latest 5 featured projects
+        </h3>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Project Name</th>
+                    <th scope="col">Peoject Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for f in featuredProjects %}
+                <tr>
+                    <td><a>{{ f.project_name }}</a></td>
+                    <td><a>{{ f.details }}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
     </div>
+</div>
+
+<form method="GET" action="">
+    <input type="text" name="q" placeholder="search" value="{{ request.GET.q }}">
+    <input type="submit" value="search">
+</form>
 
 {% endblock %}
 {% block js %}
