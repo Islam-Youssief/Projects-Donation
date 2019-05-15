@@ -64,7 +64,7 @@ def project_details(request, id):
             comment = Comment()
             print(request.POST)
             comment.comment = request.POST['comment']
-            comment.user_id = 2  # Logged in user
+            comment.user_id = 1  # Logged in user
             comment.project_id = id
             comment.save()
     # Checking on Donations
@@ -193,12 +193,17 @@ def search(request):
 #             comment.save()
 #     return render(request, 'projects/project_page.html', {'comment': commentForm})
 def report_project(request, id):
-    project = ReportedProject()
-    project.project_id = id
-    project.user_id = 2
-    project.is_reported = 0
-    project.save()
-    return redirect('project_details', id)
+    reported_projects = ReportedProject.objects.filter(project_id = id)
+    user_reports = reported_projects.filter(user_id = 1)
+    if user_reports.count() > 0:
+        return redirect('project_details', id)
+    else:
+        project = ReportedProject()
+        project.project_id = id
+        project.user_id = 1
+        project.is_reported = 0
+        project.save()
+        return redirect('project_details', id)
 
 def cancel_project(request, id):
     project = Project.objects.get(id=id)
@@ -211,9 +216,14 @@ def delete_comment(request, id, comment_id):
     return redirect('project_details', id)
 
 def report_comment(request, id, comment_id):
-    comment = ReportedComment()
-    comment.comment_id = comment_id
-    comment.user_id = 2
-    comment.is_reported = 0
-    comment.save()
-    return redirect('project_details', id)
+    reported_comments = ReportedComment.objects.filter(comment_id = comment_id)
+    user_reports = reported_comments.filter(user_id = 1)
+    if user_reports.count() > 0:
+        return redirect('project_details', id)
+    else:
+        comment = ReportedComment()
+        comment.comment_id = comment_id
+        comment.user_id = 1
+        comment.is_reported = 0
+        comment.save()
+        return redirect('project_details', id)
