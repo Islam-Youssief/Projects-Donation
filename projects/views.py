@@ -3,6 +3,8 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category
+from django.shortcuts import redirect, render
 from projects.forms import ProjectForm , PictureForm
 from django.forms import modelformset_factory
 from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
@@ -46,6 +48,7 @@ def project_details(request, id):
     if avg_rate['rate__avg'] == None:
         avg_rate['rate__avg'] = "0"
     comments = list(project.comment_set.values())
+    
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
@@ -84,14 +87,28 @@ def index(request):
 
     cat = Category.objects.all()
 
+    featured = Project.objects.raw('''SELECT projects_project.id, projects_project.project_name, projects_project.details
+                                        FROM projects_project
+                                        WHERE is_featured = 1
+                                        ORDER BY is_featured
+                                        LIMIT 5''')
+
     return render(request, 'index.html', {'hightLatestProject': rated,
                                           'latestProject': latest,
-                                          'allCategories': cat 
+                                          'allCategories': cat,
+                                          'featuredProjects': featured
                                           })
 
+
+cat2 = [
+    {"id": 1, "name": "book1"},
+    {"id": 2, "name": "book2"},
+]
+
+
 def displaydetails(request, id):
-    print(id)
-    cat2 = Category.objects.all()
+    # print(id)
+    #cat2 = Category.objects.all()
     details = {}
     for c in cat2:
         for key in c:
@@ -101,17 +118,10 @@ def displaydetails(request, id):
                 details = c
     return render(request, 'details.html', {'c': details})
 
-# def add_comment(request, id):
-#     if request.method == 'GET':
-#         commentForm = AddCommentForm()
-#     else:
-#         commentForm = AddCommentForm(request.POST)
-#         print(commentForm.is_valid())
-#         if commentForm.is_valid():
-#             comment = Comment()
-#             print(request.POST)
-#             comment.comment = request.POST['comment']
-#             comment.user_id = 2
-#             comment.project_id = id
-#             comment.save()
-#     return render(request, 'projects/project_page.html', {'comment': commentForm})
+def report_project(request, id):
+    project = ReportedProject()
+    project.project_id = id
+    project.user_id = 2
+    project.is_reported = 0
+    project.save()
+    return redirect('project_details', id)

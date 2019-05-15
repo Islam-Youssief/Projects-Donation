@@ -77,7 +77,7 @@
  <div class="projectDetails col-12">
    <div class="row justify-content-center">
                     <div class="col-10 actions">
-                        <form method="post" action="report_project">
+                        <form method="POST" action="{% url 'report_project' project.id %}">
                             {% csrf_token %}
                         
                             <button type="submit"  class="report waves-effect waves-light  yellow darken-2 btn mb-1"
