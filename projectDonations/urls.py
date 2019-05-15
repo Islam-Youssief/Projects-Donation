@@ -17,11 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from . import settings
 from projects import views
-from projects.views import index, displaydetails
+from projects.views import index , displaydetails, search
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/',include('projects.urls')),
+    
     path('', index),
-    path('category/<int:id>', displaydetails)
+    path('category/<int:id>', displaydetails),
+    #path("categorie/<int:cid>", view),
+    path("search", search),
 ]

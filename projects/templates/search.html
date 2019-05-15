@@ -1,0 +1,85 @@
+{% extends "userProfile/base.html" %}
+{% load staticfiles %}
+{% load ratings %}
+
+{% block header %}
+<div class="block-31" style="position: relative;">
+    <div class="owl-carousel loop-block-31 ">
+
+        {% static "images/" as x %}
+
+        <div class="block-30 item" style='background-image: url("{{x}}/bg_2.jpg");'
+             data-stellar-background-ratio="0.5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="heading text-center">Your Search results</h4>
+
+                        <div>
+
+                            {% if not user.is_authenticated %}
+                            <a href="{% url 'userProfile:user_login' %}"><input value="Start your own project"
+                                                                              class="btn btn-primary"></a>
+                            {% else %}
+                            <a href="{% url 'userProfile:create_project' %}"><input value="Start your own project"
+                                                                              class="btn btn-primary"></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div> <!-- HEADER -->
+{% endblock %}
+
+
+
+<!-- Featured PROJECTS -->
+{% block featured_projects %}
+<div class="site-section fund-raisers">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <h2><b> Related projects </b></h2>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12 block-11">
+                <div class="nonloop-block-11 owl-carousel">
+                    {% for project in projects %}
+
+                    <div class="card fundraise-item">
+
+                        {% for picture in project.projectpics_set.all %}
+                        {% if forloop.counter == 1 %}
+
+                        <a href="{% url 'show_project' project.id %}"><img class="card-img-top"
+                                                                           src="{{picture.project_picture.url}}"
+                                                                           alt="Image placeholder"></a>
+                        {% endif %}
+                        {% endfor %}
+
+                        <div class="card-body">
+                            <h3 class="card-title"><a href="{% url 'show_project' project.id %}">{{project.title}}</a>
+                            </h3>
+                            <p class="card-text">{{project.details | truncatewords:10}}</p>
+                            <div class="progress custom-progress-success">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{project.percentage}}%"
+                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="fund-raised d-block">$ {{ project.total_donations }} raised of ${{project.total_target}}</span>
+                        </div>
+                    </div>
+{% empty %}
+                    No results matched your search input.
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Latest Projects -->
+{% endblock %}

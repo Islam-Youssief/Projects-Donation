@@ -5,21 +5,23 @@ import math
 from django.db.models import Avg, Count, Q, Sum
 from .models import Project, ProjectRate, Comment, ProjectPictures, Category
 from django.shortcuts import redirect, render
-from projects.forms import ProjectForm , PictureForm
+from projects.forms import ProjectForm, PictureForm
 from django.forms import modelformset_factory
-from .models import Project,ProjectRate,Comment,ProjectPictures, Category, ReportedProject, Comment
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment
 from .forms import AddCommentForm
-
+from django.db.models import Q
 
 
 # nourhan
 def createProject(request):
-    
-    ImageFormSet = modelformset_factory(ProjectPictures, form=PictureForm, extra=3) 
+
+    ImageFormSet = modelformset_factory(
+        ProjectPictures, form=PictureForm, extra=3)
     if request.method == 'POST':
         form = ProjectForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=ProjectPictures.objects.none())
-        if form.is_valid() and formset.is_valid: 
+        formset = ImageFormSet(request.POST, request.FILES,
+                               queryset=ProjectPictures.objects.none())
+        if form.is_valid() and formset.is_valid:
             project_form = form.save(commit=False)
             project_form.save()
             # field = project_form.cleaned_data['tags']
@@ -29,17 +31,16 @@ def createProject(request):
             for pictureForm in formset.cleaned_data:
                 if pictureForm:
                     image = pictureForm['picture']
-                    photo = ProjectPictures(project=project_form, picture=image)
+                    photo = ProjectPictures(
+                        project=project_form, picture=image)
                     photo.save()
 
-            ### user profile page
-            return HttpResponse("project added and redirect to user profile");
+            # user profile page
+            return HttpResponse("project added and redirect to user profile")
     else:
-        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
-        project_form = ProjectForm();
-        return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
-
-
+        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none())
+        project_form = ProjectForm()
+        return render(request, 'projects/create_project.html/', {'project_form': project_form, 'picture_form': picture_form})
 
 
 def project_details(request, id):
@@ -58,15 +59,15 @@ def project_details(request, id):
             comment = Comment()
             print(request.POST)
             comment.comment = request.POST['comment']
-            comment.user_id = 2             #Logged in user
+            comment.user_id = 2  # Logged in user
             comment.project_id = id
             comment.save()
-   
-    context= {
+
+    context = {
         "project":  project,
         "avg_rate":  range(int(avg_rate['rate__avg'])),
         "stars": range((5-int(avg_rate['rate__avg']))),
-        "comments":comments,
+        "comments": comments,
         "comment": commentForm
     }
     return render(request, 'projects/project_page.html/', context)
@@ -99,15 +100,9 @@ def index(request):
                                           })
 
 
-cat2 = [
-    {"id": 1, "name": "book1"},
-    {"id": 2, "name": "book2"},
-]
-
-
 def displaydetails(request, id):
     # print(id)
-    #cat2 = Category.objects.all()
+    cat2 = Category.objects.all()
     details = {}
     for c in cat2:
         for key in c:
@@ -116,6 +111,28 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+
+def search(request):
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        mode = form.cleaned_data.get("mode")
+        searching = form.cleaned_data.get("search")
+        if mode == "1":
+            projects = taggit_tag.objects.filter(name=searching)
+            if projects:
+                projects = projects[0].project_all()
+        else:
+            projects = Project.objects.filter(project_name=searching)
+    categories = Category.objects.all()
+    context = {
+        "projects": projects,
+        "categories": categories,
+        "categieNmae": searching
+    }
+    return render(request, "projects/view.html", context)
+
+
+######### aml ########
 
 # def add_comment(request, id):
 #     if request.method == 'GET':
