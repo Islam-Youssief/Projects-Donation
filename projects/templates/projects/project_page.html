@@ -113,9 +113,7 @@
         <div class="projectDetails col-12">        
           <div class="row">
         <div class="col-7">
-           
-            <form method="POST" action="">
-                {% csrf_token %}
+
                 <div>
               <div class="col-12">
               <h4><span> Do you recomend this project</span></h4>
@@ -143,7 +141,8 @@
             </div>
             </div>
                   <div class="row">
-
+            <form method="POST" action="">
+                {% csrf_token %}
             <div class="col-12">
                 <div class="form-group">
                     {{comment.as_p}}
@@ -208,6 +207,8 @@
 
 {% endblock  %}
 {% block js %}
+    <script src="{% static 'projects/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'projects/js/rate.js' %}"></script>
     <script src="{% static 'projects/js/materialize.js' %}"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 {% endblock  %}
