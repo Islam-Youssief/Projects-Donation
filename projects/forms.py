@@ -27,4 +27,6 @@ class PictureForm(ModelForm):
         model = ProjectPictures
         fields = ['picture']
 
-
+class AddRate(forms.Form):
+    MY_CHOICES = [('1','one'), ('2','two')]
+    rating = forms.ChoiceField(widget=forms.RadioSelect, choices=MY_CHOICES)

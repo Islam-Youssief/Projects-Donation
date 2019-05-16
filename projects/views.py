@@ -4,11 +4,9 @@ import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
 from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
-from django.shortcuts import redirect, render
 from projects.forms import ProjectForm, PictureForm
 from django.forms import modelformset_factory
-from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment
-from .forms import AddCommentForm
+from .forms import AddCommentForm, AddRate
 
 # nourhan
 def createProject(request):
@@ -37,7 +35,7 @@ def createProject(request):
             return HttpResponse("project added and redirect to user profile")
     else:
         picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
-        project_form = ProjectForm();
+        project_form = ProjectForm()
         return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
 
 
@@ -60,6 +58,7 @@ def project_details(request, id):
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
+        add_rate = AddRate()
     else:
         commentForm = AddCommentForm(request.POST)
         print(commentForm.is_valid())
@@ -80,6 +79,8 @@ def project_details(request, id):
     #Getting All Comments
     comments = Comment.objects.filter(project_id=id)
     
+        
+    
 
 
     context= {
@@ -91,7 +92,8 @@ def project_details(request, id):
         "comment": commentForm,
         "target": target,
         "amount": amount,
-        "comments": comments
+        "comments": comments,
+        "rate": add_rate
     }
     return render(request, 'projects/project_page.html/', context)
 
