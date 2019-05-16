@@ -87,6 +87,7 @@
             <thead>
                 <tr>
                     <th scope="col">rate</th>
+                    <th scope="col">Name</th>
                 </tr>
             </thead>
 
@@ -94,10 +95,16 @@
                 {% for i in hightLatestProject %}
                 <tr>
                     <td>{{ i.rate }}</td>
+                    <td>{{ i.project_name }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- ******************************** -->
+
+        
+        <!-- ******************************** -->
 
     </div>
 </div>
@@ -184,11 +191,6 @@
 
     </div>
 </div>
-
-<form method="GET" action="">
-    <input type="text" name="q" placeholder="search" value="{{ request.GET.q }}">
-    <input type="submit" value="search">
-</form>
 
 {% endblock %}
 {% block js %}
