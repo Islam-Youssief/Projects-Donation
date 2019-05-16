@@ -1,0 +1,56 @@
+{% load static %}
+<nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #917e75;color:black">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'projects:home' %}">Projects Donations</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="Categories" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Categories
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="Categories">
+                        {% for cate in categories%}
+                        <a class="dropdown-item" href="{% url 'projects:showcategories' cate.id %}">{{cate.name}}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="Categories" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        projects
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="Categories">
+                        {% for pro in projects%}
+                        <a class="dropdown-item" href="{% url 'projects:showprojects' pro.id %}">{{pro.name}}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown" style="padding-left: 600px;">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if user.profile.image %}
+                        <img src="{{user.profile.image.url}}" width="20" height="20" class="rounded-circle"> {{user.username}}
+                        {% else %}
+                        <img src="{% static 'users/images/Type.png' %}" width="20" height="20" class="rounded-circle"> {{user.username}}
+                        {% endif %}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="padding-left: 600px;">
+                        <a class="dropdown-item" href="{% url 'users:profile' user.id %}">Profile</a>
+                        <a class="dropdown-item" href="{% url 'projects:new' %} ">Create a new project</a>
+                        <a class="dropdown-item" href="{%url 'users:logout' %}">Logout</a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:register' %}">Reigster</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
