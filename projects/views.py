@@ -211,6 +211,11 @@ def report_project(request, id):
         project.user_id = 1
         project.is_reported = 0
         project.save()
+        final_projects = ReportedProject.objects.filter(project_id = id)
+        if final_projects.count() >= 5:
+            report_project = Project.objects.get(id = id)
+            report_project.is_reported = 1
+            report_project.save()
         return redirect('project_details', id)
 
 def cancel_project(request, id):
