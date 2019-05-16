@@ -4,10 +4,9 @@ import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
 from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
-from projects.forms import ProjectForm, PictureForm
 from django.forms import modelformset_factory
 from .forms import AddCommentForm, AddRate
-
+from projects.forms import ProjectForm , PictureForm , DonationForm
 # nourhan
 def createProject(request):
 
@@ -136,6 +135,29 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+
+
+def projectDonate(request, id):
+    project = Project.objects.get(id=id)
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid(): 
+            result = Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).count()
+            print(result);
+            if(result > 0):
+                print("hjhjhj")
+                obj = Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).first()
+                amount_value = getattr(obj, 'amount')
+                Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).update(amount = amount_value + int(request.POST['amount']))
+            else:
+                donate_form = form.save(commit=False)
+                donate_form.save()
+            
+            print(result);
+            return HttpResponse("donations has been added and redirect to user profile");
+    else:
+        donate_form = DonationForm(initial={"project":id});
+        return render(request, 'projects/donate_project.html/',{'donate_form': donate_form , "project":  project}) 
    
 
 def search(request):

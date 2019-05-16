@@ -12,20 +12,21 @@
 <div class="container-fluid projectDetails">
   <div class="row">
     <div class="col-md-12 m-3">
-      <h1> <span> Create Project </span>
-       </h1>
+      <h1>
+        <span> Make Dontation to {{ project.project_name }} </span>
+      </h1>
     </div>
   </div>
   <form method="post" enctype="multipart/form-data" class="ml-5">
-    <p>Note: use comma separted for multiple tags </p>
-    {% csrf_token %} 
-    {% for field in project_form %}
+    {% csrf_token %}
+    <!-- <input type='hidden' name="project"  id="id_project"  value="{{ project.id }}" />  -->
+    {% for field in donate_form %}
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
           <div class="row">
             <div class="col-md-2">
-              <label class="control-label"> {{ field.label }}:</label>
+              <label class="control-label"> {% if field.label != "Project" %} {{ field.label }}: {% endif %} </label>
             </div>
             <div class="col-md-10">
               {{ field }}
@@ -34,16 +35,6 @@
         </div>
       </div>
     </div>
-    {% endfor %}
-    
-    <div class="row">
-        <div class="col-md-12">
-            <h3> Upload Images </h3>
-        </div>
-    </div>
-    {{ picture_form.management_form }}
-    {% for form in picture_form %}
-    {{ form  }} <br />
     {% endfor %}
     <!--    end new 3-->
     <button type="submit">Submit</button>
