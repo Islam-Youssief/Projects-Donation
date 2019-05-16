@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{{ section.title }}{% endblock %}</title>
+    <!-- css import for bootstrap  -->
+    {% block style %}
+    {% endblock %}
+    <!-- js import for bootstrap  -->
+    {% block js %}
+    {% endblock %}
+</head>
+
+<body>
+    <!--block start-->
+    {% block content %}
+    {% endblock %}
+    <!--start footer -->
+    <!-- Footer -->
+    <!-- Footer -->
+</body>
+
+</html>

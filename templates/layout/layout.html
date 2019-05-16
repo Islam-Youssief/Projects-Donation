@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{{ section.title }}{% endblock %}</title>
+    <!-- css import for bootstrap  -->
+    <link rel="stylesheet" href="{% static 'projects/css/bootstrap.min.css'%}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'projects/css/font-awesome/css/all.min.css'%}">
+    <link rel="stylesheet" href="{% static 'projects/css/jquery.bxslider.css'%}">
+    <link rel="stylesheet" href="{% static 'projects/css/star-rating-svg.css'%}">
+    <link rel="stylesheet" href="{% static 'projects/css/project.css'%}">
+    {% block style %}
+    {% endblock %}
+    <!-- js import for bootstrap  -->
+    <script src="{% static 'projects/js/jquery-3.2.1.min.js'%}"></script>
+    <script src="{% static 'projects/js/popper.min.js'%}"></script>
+    <script src="{% static 'projects/js/bootstrap.min.js'%}"></script>
+    {% block js %}
+    {% endblock %}
+</head>
+
+<body>
+    {% block nav %}
+    {% endblock %}
+    <!--block start-->
+    {% block content %}
+    {% endblock %}
+    <!--start footer -->
+    <!-- Footer -->
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{% extends "layout/layout1.html" %}
+{% block nav %}
+{% include "layout/Navbar.html" %}
+<div style="height:80px;"></div>
+{% endblock %}
+{% block title %}Reset Email{% endblock %}
+{% block content %}
+<div class="container mb-5">
+    <center>
+        <h1 class="textmuted">Forgot your password ?</h1>
+        <p>Please specify your email address to receive instructions for resetting it.</p>
+        <form method="POST">
+            {% csrf_token %}
+            {%for field in form%}
+            <h3>Email : {{ field }}
+                {%endfor%}
+                <input type="submit" class="btn btn-info" value="Reset Email">
+            </h3>
+        </form>
+    </center>
+</div>
+{% endblock %}

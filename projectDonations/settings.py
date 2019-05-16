@@ -31,18 +31,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'users',
-    'projects',
-    'taggit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'projects.apps.ProjectsConfig',
+    'users.apps.UsersConfig',
+    'taggit',
+    'password_reset',
+    'django_cleanup',
 ]
 
-AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,8 +54,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+# AUTH_USER_MODEL = 'users.Account'
 ROOT_URLCONF = 'projectDonations.urls'
+LOGIN_URL = 'users:login'
+LOGOUT_URL = 'users:logout'
 
 TEMPLATES = [
     {
@@ -121,10 +124,25 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')
-MEDIA_URL = '/photos/'
+STATIC_ROOT = os.path.join(BASE_DIR, ('staticfiles'))
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "media"),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
+
+# email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+with open('env') as f:
+    EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = f.read().split('\n')
+
+PASSWORD_RESET_TIMEOUT_DAYS = 1

@@ -25,6 +25,7 @@ class Project(models.Model):
     is_featured = models.BooleanField(default=False)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    is_reported = models.BooleanField(default=False)
 
     def __str__(self):
         return self.project_name
@@ -63,6 +64,7 @@ class Comment(models.Model):
                              on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     comment = models.TextField()
+    is_reported = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user + ' Comment ' + self.project.title + ' with comment : ' + self.comment
@@ -82,7 +84,7 @@ class ReportedProject(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    is_reported = models.BooleanField()
+    is_reported = models.IntegerField(default=0)
 
 
 class ReportedComment(models.Model):
