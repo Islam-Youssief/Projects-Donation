@@ -28,7 +28,7 @@ urlpatterns = [
     path('', index),
     path('category/<int:id>', displaydetails),
     #path("categorie/<int:cid>", view),
-    path("search", search),
+    path("search", search, name="search"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

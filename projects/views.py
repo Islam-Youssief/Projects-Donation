@@ -137,23 +137,28 @@ def displaydetails(request, id):
    
 
 def search(request):
-    form = SearchForm(request.GET)
-    if form.is_valid():
-        mode = form.cleaned_data.get("mode")
-        searching = form.cleaned_data.get("search")
-        if mode == "1":
-            projects = taggit_tag.objects.filter(name=searching)
-            if projects:
-                projects = projects[0].project_all()
-        else:
-            projects = Project.objects.filter(project_name=searching)
-    categories = Category.objects.all()
-    context = {
-        "projects": projects,
-        "categories": categories,
-        "categieNmae": searching
-    }
-    return render(request, "projects/view.html", context)
+    query = request.GET.get('q')
+    result = []
+    # get the query result
+    if query:
+        result = Project.objects.filter(
+            Q(project_name__icontains=query) |
+            Q(project_name__icontains=query)
+        )
+    resultList = []
+
+    for project in result:
+        print(project)
+        resultList.append({
+            'id':project.id,
+            'project_name': project.project_name,
+            'details': project.details,
+            'start_date':project.start_date,
+        })
+    return render(request, 'search.html', {'results': resultList})
+
+    Project.objects.filter(Q(project_name__icontains="project") | Q(
+        details__icontains="project"))
 
 
 ######### aml ########
