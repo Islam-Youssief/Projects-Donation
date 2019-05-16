@@ -77,8 +77,7 @@ def project_details(request, id):
 
     #Getting All Comments
     comments = Comment.objects.filter(project_id=id)
-    
-        
+
     
 
 
@@ -221,13 +220,18 @@ def delete_comment(request, id, comment_id):
 
 def report_comment(request, id, comment_id):
     reported_comments = ReportedComment.objects.filter(comment_id = comment_id)
-    user_reports = reported_comments.filter(user_id = 1)
+    user_reports = reported_comments.filter(user_id = 5)
     if user_reports.count() > 0:
         return redirect('project_details', id)
     else:
         comment = ReportedComment()
         comment.comment_id = comment_id
-        comment.user_id = 1
+        comment.user_id = 5
         comment.is_reported = 0
         comment.save()
+        final_comments = ReportedComment.objects.filter(comment_id = comment_id)
+        if final_comments.count() >= 5:
+            report_comment = Comment.objects.get(id = comment_id)
+            report_comment.is_reported = 1
+            report_comment.save()
         return redirect('project_details', id)

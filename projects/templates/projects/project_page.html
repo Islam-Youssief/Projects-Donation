@@ -156,6 +156,7 @@
             </form>
            
           {% for comment in comments %}
+          {% if comment.is_reported == 0 %}
            <div class="projectDetails col-12">  
                 <div class="card-content light-green lighten-4">
                    <p>{{comment.comment}}</p>
@@ -177,6 +178,7 @@
                            style="border-radius:15px;"> Report </button>
                     </form>
             </div>
+            {% endif %}
             {% endfor %}
         
         </div>
