@@ -11,7 +11,6 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from users.forms import *
 from projects.models import *
-# from users.forms import UserFormEdit, profileFormEdit, UserFormAdd, UserFormPassword, userLoginForm
 from .tokens import account_activation_token
 
 
@@ -46,7 +45,7 @@ def signup_new_user(request):
                     mail_subject, message, to=[to_email]
                 )
                 email.send()
-                messages.success(request, "sucess Register -- Welcom -- "
+                messages.success(request, "you have sucessfully Registered your account.. "
                                           "Please confirm your email address to complete the registration  ")
                 return HttpResponse('<center><h1>A confirmation Email was sent to your email .. </h1></center>')
             else:
@@ -59,6 +58,68 @@ def signup_new_user(request):
     else:
         return redirect("projects:home")
 
+
+# go Profile
+def profile(request, uid):
+    user2 = get_object_or_404(User, id=uid)
+    categories = Categories.objects.all()
+    if request.user.id == user2.id:
+        flag = 1
+    else:
+        flag = 0
+    context = {
+        "userprofile": user2,
+        "userProject": user2.projects_set.all(),
+        "categories": categories,
+        "flag": flag,
+        "pcount": user2.projects_set.count(),
+        "suppliers": user2.supplier_set.all(),
+        "scount": user2.supplier_set.count()
+    }
+    return render(request, "users/profile.html", context)
+
+
+# logout
+@login_required()
+def logout_view(request):
+    logout(request)
+    return redirect("/projects/home")
+
+
+# login
+def loginuser(request):
+    categories = Categories.objects.all()
+    context = {
+        "categories": categories,
+    }
+    if not request.user.is_authenticated:
+        if request.POST:
+            form = userLoginForm(request.POST)
+            if (form.is_valid()):
+                users = authenticate(username=form.cleaned_data.get("username"),
+                                     password=form.cleaned_data.get("password"))
+                if users is not None:
+                    login(request, users)
+                    messages.success(
+                        request, "You have successfully registered your account. ")
+                    return redirect("projects:home")
+                else:
+                    context["data"] = request.POST['username']
+                    messages.error(
+                        request, "password or user name is incoorect")
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            # No backend authenticated the credentials
+            else:
+                messages.error(request, form.errors)
+                context["data"] = request.POST
+                return render(request, "users/login.html", context)
+        else:
+            return render(request, "users/login.html", context)
+    else:
+        return redirect("projects:home")
+
+
+# testing
 
 def activate(request, uidb64, token):
     try:
