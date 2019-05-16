@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'projectDonations.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'projectDonation',
+        'NAME': 'dbcrowd',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'felfel',
         'HOST': 'localhost',
         'PORT': '3306',
     }

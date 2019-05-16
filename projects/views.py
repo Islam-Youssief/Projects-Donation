@@ -4,12 +4,9 @@ import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
 from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
-from django.shortcuts import redirect, render
-from projects.forms import ProjectForm, PictureForm
 from django.forms import modelformset_factory
-from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment
-from .forms import AddCommentForm
-
+from .forms import AddCommentForm, AddRate
+from projects.forms import ProjectForm , PictureForm , DonationForm
 # nourhan
 def createProject(request):
 
@@ -37,7 +34,7 @@ def createProject(request):
             return HttpResponse("project added and redirect to user profile")
     else:
         picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
-        project_form = ProjectForm();
+        project_form = ProjectForm()
         return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
 
 
@@ -60,6 +57,7 @@ def project_details(request, id):
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
+        add_rate = AddRate()
     else:
         commentForm = AddCommentForm(request.POST)
         print(commentForm.is_valid())
@@ -67,7 +65,7 @@ def project_details(request, id):
             comment = Comment()
             print(request.POST)
             comment.comment = request.POST['comment']
-            comment.user_id = 2  # Logged in user
+            comment.user_id = 1  # Logged in user
             comment.project_id = id
             comment.save()
     # Checking on Donations
@@ -80,6 +78,8 @@ def project_details(request, id):
     #Getting All Comments
     comments = Comment.objects.filter(project_id=id)
     
+        
+    
 
 
     context= {
@@ -91,7 +91,8 @@ def project_details(request, id):
         "comment": commentForm,
         "target": target,
         "amount": amount,
-        "comments": comments
+        "comments": comments,
+        "rate": add_rate
     }
     return render(request, 'projects/project_page.html/', context)
 
@@ -134,6 +135,29 @@ def displaydetails(request, id):
             if key == 'id' and c[key] == id:
                 details = c
     return render(request, 'details.html', {'c': details})
+
+
+def projectDonate(request, id):
+    project = Project.objects.get(id=id)
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid(): 
+            result = Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).count()
+            print(result);
+            if(result > 0):
+                print("hjhjhj")
+                obj = Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).first()
+                amount_value = getattr(obj, 'amount')
+                Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).update(amount = amount_value + int(request.POST['amount']))
+            else:
+                donate_form = form.save(commit=False)
+                donate_form.save()
+            
+            print(result);
+            return HttpResponse("donations has been added and redirect to user profile");
+    else:
+        donate_form = DonationForm(initial={"project":id});
+        return render(request, 'projects/donate_project.html/',{'donate_form': donate_form , "project":  project}) 
    
 
 def search(request):
@@ -178,12 +202,17 @@ def search(request):
 #             comment.save()
 #     return render(request, 'projects/project_page.html', {'comment': commentForm})
 def report_project(request, id):
-    project = ReportedProject()
-    project.project_id = id
-    project.user_id = 2
-    project.is_reported = 0
-    project.save()
-    return redirect('project_details', id)
+    reported_projects = ReportedProject.objects.filter(project_id = id)
+    user_reports = reported_projects.filter(user_id = 1)
+    if user_reports.count() > 0:
+        return redirect('project_details', id)
+    else:
+        project = ReportedProject()
+        project.project_id = id
+        project.user_id = 1
+        project.is_reported = 0
+        project.save()
+        return redirect('project_details', id)
 
 def cancel_project(request, id):
     project = Project.objects.get(id=id)
@@ -196,9 +225,14 @@ def delete_comment(request, id, comment_id):
     return redirect('project_details', id)
 
 def report_comment(request, id, comment_id):
-    comment = ReportedComment()
-    comment.comment_id = comment_id
-    comment.user_id = 2
-    comment.is_reported = 0
-    comment.save()
-    return redirect('project_details', id)
+    reported_comments = ReportedComment.objects.filter(comment_id = comment_id)
+    user_reports = reported_comments.filter(user_id = 1)
+    if user_reports.count() > 0:
+        return redirect('project_details', id)
+    else:
+        comment = ReportedComment()
+        comment.comment_id = comment_id
+        comment.user_id = 1
+        comment.is_reported = 0
+        comment.save()
+        return redirect('project_details', id)

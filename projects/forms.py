@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from django.db import models
-from .models import Project , ProjectPictures
+from .models import Project , ProjectPictures , Donation
 
 
 class AddCommentForm(forms.Form):
@@ -27,4 +27,12 @@ class PictureForm(ModelForm):
         model = ProjectPictures
         fields = ['picture']
 
+class AddRate(forms.Form):
+    MY_CHOICES = [('1','one'), ('2','two')]
+    rating = forms.ChoiceField(widget=forms.RadioSelect, choices=MY_CHOICES)
 
+class DonationForm(ModelForm):
+    class Meta:
+        model = Donation
+        fields = ['amount', 'user' , 'project' ]
+        widgets = {'project': forms.HiddenInput()}
