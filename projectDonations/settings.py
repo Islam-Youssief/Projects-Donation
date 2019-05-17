@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'projectDonations.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'projectDonation',
+        'NAME': 'aaaaaa',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '/opt/lampp/var/mysql/mysql.sock',

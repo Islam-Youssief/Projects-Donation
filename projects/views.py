@@ -3,11 +3,13 @@ from django.http import HttpResponse
 import datetime
 import math
 from django.db.models import Avg, Count, Q, Sum
-from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment , Donation
+from .models import Project, ProjectRate, Comment, ProjectPictures, Category, ReportedProject, Comment, ReportedComment, Donation
 from django.forms import modelformset_factory
 from .forms import AddCommentForm, AddRate
-from projects.forms import ProjectForm , PictureForm , DonationForm
+from projects.forms import ProjectForm, PictureForm, DonationForm
 # nourhan
+
+
 def createProject(request):
 
     ImageFormSet = modelformset_factory(
@@ -33,21 +35,21 @@ def createProject(request):
             # user profile page
             return HttpResponse("project added and redirect to user profile")
     else:
-        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none()) 
+        picture_form = ImageFormSet(queryset=ProjectPictures.objects.none())
         project_form = ProjectForm()
-        return render(request, 'projects/create_project.html/',{'project_form': project_form ,'picture_form':picture_form})
+        return render(request, 'projects/create_project.html/', {'project_form': project_form, 'picture_form': picture_form})
 
 
-#fatema
+# fatema
 
 def project_details(request, id):
     project = Project.objects.get(id=id)
     rates = list(project.projectrate_set.values())
     avgRate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
     if avgRate['rate__avg'] == None:
-        avgRate['rate__avg']= "0"    
+        avgRate['rate__avg'] = "0"
     projectimage = project.projectpictures_set.first()
-    if projectimage != None : 
+    if projectimage != None:
         projectimage = projectimage.picture.url
         picturesObjects = project.projectpictures_set.all()
         pictures = []
@@ -71,21 +73,18 @@ def project_details(request, id):
     # Checking on Donations
     target = project.target * 0.25
     amount = 0
-    donations = Donation.objects.filter(project_id = id)
+    donations = Donation.objects.filter(project_id=id)
     for donation in donations:
         amount = amount + donation.amount
 
-    #Getting All Comments
+    # Getting All Comments
     comments = Comment.objects.filter(project_id=id)
 
-    
-
-
-    context= {
+    context = {
         "project": project,
         "avgRate": range(int(avgRate['rate__avg'])),
-        "stars": range((5-int(avgRate['rate__avg']))),
-        "rates":rates,
+        "stars": range((5 - int(avgRate['rate__avg']))),
+        "rates": rates,
         "pictures": pictures,
         "comment": commentForm,
         "target": target,
@@ -140,24 +139,27 @@ def projectDonate(request, id):
     project = Project.objects.get(id=id)
     if request.method == 'POST':
         form = DonationForm(request.POST)
-        if form.is_valid(): 
-            result = Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).count()
-            print(result);
+        if form.is_valid():
+            result = Donation.objects.filter(
+                Q(project_id=id) & Q(user_id=request.POST['user'])).count()
+            print(result)
             if(result > 0):
                 print("hjhjhj")
-                obj = Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).first()
+                obj = Donation.objects.filter(Q(project_id=id) & Q(
+                    user_id=request.POST['user'])).first()
                 amount_value = getattr(obj, 'amount')
-                Donation.objects.filter(Q(project_id=id) & Q(user_id =request.POST['user'])).update(amount = amount_value + int(request.POST['amount']))
+                Donation.objects.filter(Q(project_id=id) & Q(user_id=request.POST['user'])).update(
+                    amount=amount_value + int(request.POST['amount']))
             else:
                 donate_form = form.save(commit=False)
                 donate_form.save()
-            
-            print(result);
-            return HttpResponse("donations has been added and redirect to user profile");
+
+            print(result)
+            return HttpResponse("donations has been added and redirect to user profile")
     else:
-        donate_form = DonationForm(initial={"project":id});
-        return render(request, 'projects/donate_project.html/',{'donate_form': donate_form , "project":  project}) 
-   
+        donate_form = DonationForm(initial={"project": id})
+        return render(request, 'projects/donate_project.html/', {'donate_form': donate_form, "project":  project})
+
 
 def search(request):
     query = request.GET.get('q')
@@ -173,10 +175,10 @@ def search(request):
     for project in result:
         print(project)
         resultList.append({
-            'id':project.id,
+            'id': project.id,
             'project_name': project.project_name,
             'details': project.details,
-            'start_date':project.start_date,
+            'start_date': project.start_date,
         })
     return render(request, 'search.html', {'results': resultList})
 
@@ -199,10 +201,11 @@ def search(request):
 #             comment.user_id = 2
 #             comment.project_id = id
 #             comment.save()
-#     return render(request, 'projects/project_page.html', {'comment': commentForm})
+# return render(request, 'projects/project_page.html', {'comment':
+# commentForm})
 def report_project(request, id):
-    reported_projects = ReportedProject.objects.filter(project_id = id)
-    user_reports = reported_projects.filter(user_id = 1)
+    reported_projects = ReportedProject.objects.filter(project_id=id)
+    user_reports = reported_projects.filter(user_id=1)
     if user_reports.count() > 0:
         return redirect('project_details', id)
     else:
@@ -211,26 +214,29 @@ def report_project(request, id):
         project.user_id = 1
         project.is_reported = 0
         project.save()
-        final_projects = ReportedProject.objects.filter(project_id = id)
+        final_projects = ReportedProject.objects.filter(project_id=id)
         if final_projects.count() >= 5:
-            report_project = Project.objects.get(id = id)
+            report_project = Project.objects.get(id=id)
             report_project.is_reported = 1
             report_project.save()
         return redirect('project_details', id)
+
 
 def cancel_project(request, id):
     project = Project.objects.get(id=id)
     project.delete()
     return redirect('project_details', id)
 
+
 def delete_comment(request, id, comment_id):
     comment = Comment.objects.get(id=comment_id)
     comment.delete()
     return redirect('project_details', id)
 
+
 def report_comment(request, id, comment_id):
-    reported_comments = ReportedComment.objects.filter(comment_id = comment_id)
-    user_reports = reported_comments.filter(user_id = 5)
+    reported_comments = ReportedComment.objects.filter(comment_id=comment_id)
+    user_reports = reported_comments.filter(user_id=5)
     if user_reports.count() > 0:
         return redirect('project_details', id)
     else:
@@ -239,9 +245,22 @@ def report_comment(request, id, comment_id):
         comment.user_id = 5
         comment.is_reported = 0
         comment.save()
-        final_comments = ReportedComment.objects.filter(comment_id = comment_id)
+        final_comments = ReportedComment.objects.filter(comment_id=comment_id)
         if final_comments.count() >= 5:
-            report_comment = Comment.objects.get(id = comment_id)
+            report_comment = Comment.objects.get(id=comment_id)
             report_comment.is_reported = 1
             report_comment.save()
         return redirect('project_details', id)
+
+
+def viewCategories(request, cid):
+    # ISLAM
+    projects = get_object_or_404(Category, id=cid)
+    categories = Category.objects.all()
+    context = {
+        "projects": projects.projects,
+        "categories": categories,
+        "categieNmae": projects.name
+    }
+
+    return render(request, "projects/projectHome.html", context)
