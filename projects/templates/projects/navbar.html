@@ -14,15 +14,15 @@
 
 <body>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #917e75;color:black">
-        <a class="navbar-brand" href="{% url 'projects:index' %}">Projects Donations</a>
+        <a class="navbar-brand" href="{% url 'projects_index' %}">Projects Donations</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             {% if user.is_authenticated %}
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="{% url 'projects:index' %}">Home <span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link" href="{% url 'projects:index' user.id %}">Projects</a>
+                <a class="nav-item nav-link active" href="{% url 'projects_index' %}">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="{% url 'projects_index' user.id %}">Projects</a>
                 <a class="nav-item nav-link" href="{% url 'users:profile' user.id %}">Profile</a>
                 <a class="nav-item nav-link" href="/projects/create">create Projects</a>
             </div>
@@ -35,7 +35,7 @@
             </li>
             {% endif %}
         </div>
-        <form class="form-inline col-4" action="{% url 'projects:search' %}" method="get" accept-charset="utf-8">
+        <form class="form-inline col-4" action="{% url 'projects_search' %}" method="get" accept-charset="utf-8">
             <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-warning my-2 my-sm-0" style="width:80px;" type="submit">Search</button>
         </form>

@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'projectDonations.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aaaaaa',
+        'NAME': 'dbcrowd',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '/opt/lampp/var/mysql/mysql.sock',
+        'PASSWORD': 'felfel',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
@@ -142,7 +142,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-with open('env') as f:
-    EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = f.read().split('\n')
+# with open('env') as f:
+#     EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = f.read().split('\n')
+EMAIL_HOST_USER='ma.elgohary995@gmail.com'
+EMAIL_HOST_PASSWORD=''
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1
