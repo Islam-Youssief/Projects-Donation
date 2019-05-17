@@ -33,10 +33,11 @@ def createProject(request):
                     photo.save()
 
             # user profile page
-            return HttpResponse("project added and redirect to user profile")
+            return redirect("index")
+            # return HttpResponse("project added and redirect to user profile")
     else:
         picture_form = ImageFormSet(queryset=ProjectPictures.objects.none())
-        project_form = ProjectForm()
+        project_form = ProjectForm(initial={"owner":request.session['_auth_user_id']})
         return render(request, 'projects/create_project.html/', {'project_form': project_form, 'picture_form': picture_form})
 
 
@@ -155,9 +156,10 @@ def projectDonate(request, id):
                 donate_form.save()
 
             print(result)
-            return HttpResponse("donations has been added and redirect to user profile")
+            return redirect("index")
+            # return HttpResponse("donations has been added and redirect to user profile")
     else:
-        donate_form = DonationForm(initial={"project": id})
+        donate_form = DonationForm(initial={"project": id , "user":request.session['_auth_user_id']})
         return render(request, 'projects/donate_project.html/', {'donate_form': donate_form, "project":  project})
 
 
