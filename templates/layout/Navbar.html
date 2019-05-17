@@ -22,7 +22,7 @@
             {% if user.is_authenticated %}
             <div class="navbar-nav">
                 <a class="nav-item nav-link active" href="{% url 'projects_index' %}">Home <span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link" href="{% url 'projects_index' user.id %}">Projects</a>
+                <a class="nav-item nav-link" href="{% url 'projects_index' %}">Projects</a>
                 <a class="nav-item nav-link" href="{% url 'users:profile' user.id %}">Profile</a>
                 <a class="nav-item nav-link" href="/projects/create">create Projects</a>
             </div>

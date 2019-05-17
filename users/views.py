@@ -59,7 +59,7 @@ def signup_new_user(request):
             return render(request, "users/register.html", context)
     else:
         # return redirect("projects:home")
-        return redirect("projects:index")
+        return redirect("projects_index")
         # return render(request, 'index.html')
 
 
@@ -96,7 +96,7 @@ def deleteAccount(request):
             user.delete()
             messages.success(request, "Delete Account Sucess")
             # return redirect("/projects/home")
-            return redirect("projects:index")
+            return redirect("projects_index")
             # return render(request, 'index.html')
         else:
             messages.error(request, "Enter Valid password ")
@@ -137,7 +137,7 @@ def loginuser(request):
                     messages.success(
                         request, "You have successfully registered your account. ")
                     # return redirect("projects:home")
-                    return redirect("projects:index")
+                    return redirect("projects_index")
                     # return render(request, 'index.html')
                 else:
                     context["data"] = request.POST['username']
@@ -153,7 +153,7 @@ def loginuser(request):
             return render(request, "users/login.html", context)
     else:
         # return redirect("projects:home")
-        return redirect("projects:index")
+        return redirect("projects_index")
         # return render(request, 'index.html')
 
 
@@ -196,7 +196,7 @@ def activate(request, uidb64, token):
         messages.success(
             request, "You have successfully registered to projects donations..")
         # return redirect('projects:home')
-        return redirect('projects:index')
+        return redirect('projects_index')
         # return render(request, 'index.html')
     else:
         return HttpResponse('<h1> 404 </h1>')
