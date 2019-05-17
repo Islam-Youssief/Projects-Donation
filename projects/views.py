@@ -204,6 +204,7 @@ def search(request):
 # return render(request, 'projects/project_page.html', {'comment':
 # commentForm})
 def report_project(request, id):
+    # user_id = request.session['id']
     reported_projects = ReportedProject.objects.filter(project_id=id)
     user_reports = reported_projects.filter(user_id=1)
     if user_reports.count() > 0:
