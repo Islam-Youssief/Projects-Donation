@@ -11,7 +11,6 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from users.forms import *
 from projects.models import *
-# from users.forms import UserFormEdit, profileFormEdit, UserFormAdd, UserFormPassword, userLoginForm
 from .tokens import account_activation_token
 
 
@@ -58,9 +57,8 @@ def signup_new_user(request):
         else:
             return render(request, "users/register.html", context)
     else:
-        # return redirect("projects:home")
+
         return redirect("projects_index")
-        # return render(request, 'index.html')
 
 
 # go Profile
@@ -77,8 +75,6 @@ def profile(request, uid):
         "categories": categories,
         "flag": flag,
         "pcount": user2.project_set.count(),
-        # "suppliers": user2.supplier_set.all(),
-        # "scount": user2.supplier_set.count()
     }
     return render(request, "users/profile.html", context)
 
@@ -95,9 +91,8 @@ def deleteAccount(request):
         if user is not None:
             user.delete()
             messages.success(request, "Delete Account Sucess")
-            # return redirect("/projects/home")
             return redirect("projects_index")
-            # return render(request, 'index.html')
+
         else:
             messages.error(request, "Enter Valid password ")
     messages.error(request, form.errors)
@@ -131,14 +126,14 @@ def loginuser(request):
                     user_session = User.objects.filter(username=form.cleaned_data.get("username"),
                                                        password=form.cleaned_data.get("password"))
 
-                    request.session['id'] = user_session.id
+                    request.session['id'] = request.user.id
                     login(request, users)
 
                     messages.success(
                         request, "You have successfully registered your account. ")
-                    # return redirect("projects:home")
+
                     return redirect("projects_index")
-                    # return render(request, 'index.html')
+
                 else:
                     context["data"] = request.POST['username']
                     messages.error(
@@ -152,9 +147,8 @@ def loginuser(request):
         else:
             return render(request, "users/login.html", context)
     else:
-        # return redirect("projects:home")
+
         return redirect("projects_index")
-        # return render(request, 'index.html')
 
 
 # edit profile
@@ -195,8 +189,8 @@ def activate(request, uidb64, token):
         login(request, user)
         messages.success(
             request, "You have successfully registered to projects donations..")
-        # return redirect('projects:home')
+
         return redirect('projects_index')
-        # return render(request, 'index.html')
+
     else:
-        return HttpResponse('<h1> 404 </h1>')
+        return HttpResponse('<center><h1> 404 </h1></center>')

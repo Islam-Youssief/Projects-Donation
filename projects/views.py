@@ -204,15 +204,15 @@ def search(request):
 # return render(request, 'projects/project_page.html', {'comment':
 # commentForm})
 def report_project(request, id):
-    # user_id = request.session['id']
+    user_id = request.session['_auth_user_id']
     reported_projects = ReportedProject.objects.filter(project_id=id)
-    user_reports = reported_projects.filter(user_id=1)
+    user_reports = reported_projects.filter(user_id=user_id)
     if user_reports.count() > 0:
         return redirect('project_details', id)
     else:
         project = ReportedProject()
         project.project_id = id
-        project.user_id = 1
+        project.user_id = user_id
         project.is_reported = 0
         project.save()
         final_projects = ReportedProject.objects.filter(project_id=id)
@@ -236,14 +236,15 @@ def delete_comment(request, id, comment_id):
 
 
 def report_comment(request, id, comment_id):
+    user_id = request.session['_auth_user_id']
     reported_comments = ReportedComment.objects.filter(comment_id=comment_id)
-    user_reports = reported_comments.filter(user_id=5)
+    user_reports = reported_comments.filter(user_id=user_id)
     if user_reports.count() > 0:
         return redirect('project_details', id)
     else:
         comment = ReportedComment()
         comment.comment_id = comment_id
-        comment.user_id = 5
+        comment.user_id = user_id
         comment.is_reported = 0
         comment.save()
         final_comments = ReportedComment.objects.filter(comment_id=comment_id)
