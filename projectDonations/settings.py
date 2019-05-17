@@ -145,6 +145,6 @@ EMAIL_USE_TLS = True
 # with open('env') as f:
 #     EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = f.read().split('\n')
 EMAIL_HOST_USER='ma.elgohary995@gmail.com'
-EMAIL_HOST_PASSWORD='felfel_95'
+EMAIL_HOST_PASSWORD=''
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1
