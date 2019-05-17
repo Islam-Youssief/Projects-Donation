@@ -33,6 +33,7 @@ def signup_new_user(request):
                 newprof.phone = formprofile.cleaned_data.get("phone")
                 newprof.image = formprofile.cleaned_data.get("image")
                 newprof.save()
+                request.session['id'] = User.objects.latest('id')
                 current_site = get_current_site(request)
                 mail_subject = 'Projects Donation Site - Activation Email'
                 message = render_to_string('users/acc_active_email.html', {
@@ -88,7 +89,7 @@ def deleteAccount(request):
     user2 = request.user
     form = UserFormPassword(request.POST)
     if form.is_valid():
-        print("wwww")
+
         user = authenticate(username=user2.username,
                             password=form.cleaned_data.get("password"))
         if user is not None:
@@ -107,9 +108,10 @@ def deleteAccount(request):
 @login_required()
 def logout_view(request):
     logout(request)
-    # return redirect("/projects/home")
-    return redirect("projects:index")
-    # return render(request, 'index.html')
+    if "id" not in request.session:
+        return render(request, "users/login.html")
+    del request.session['id']
+    return render(request, "users/login.html")
 
 
 # login
@@ -122,10 +124,16 @@ def loginuser(request):
         if request.POST:
             form = userLoginForm(request.POST)
             if (form.is_valid()):
+
                 users = authenticate(username=form.cleaned_data.get("username"),
                                      password=form.cleaned_data.get("password"))
                 if users is not None:
+                    user_session = User.objects.filter(username=form.cleaned_data.get("username"),
+                                                       password=form.cleaned_data.get("password"))
+
+                    request.session['id'] = user_session.id
                     login(request, users)
+
                     messages.success(
                         request, "You have successfully registered your account. ")
                     # return redirect("projects:home")
