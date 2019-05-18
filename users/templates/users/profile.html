@@ -125,7 +125,7 @@
                                 </p>
                             </div>
                             <div class="card-body">
-                                <a href="{% url 'projects:detail' project.project.id %}" class="card-link">Details</a>
+                                <a href="{% url 'project_details' project.project.id %}" class="card-link">Details</a>
                             </div>
                             <div class="more-info">
                                 <h3 class="text-center">
@@ -182,11 +182,11 @@
                                     </p>
                                 </div>
                                 <div class="card-body pb-0">
-                                    <a href="{% url 'projects:detail' project.id %}" class="card-link">Details</a>
+                                    <a href="{% url 'project_details' project.id %}" class="card-link">Details</a>
                                     <!--testing-->
                                     {% if project.checkTarget %}
                                     {% if flag %}
-                                    <a href="{% url 'projects:deleteProject' project.id %}" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'cancel_project' project.id %}" class="btn btn-danger">Delete</a>
                                     {% else %}
                                     <button type="button" class="btn btn-link" data-toggle="modal" data-target="#dnonate{{forloop.counter}}" data-whatever="@mdo">Donate</button>
                                     {% endif %}
@@ -205,7 +205,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form action="{% url 'projects:donate' project.id %}" method="post" id="donta">
+                                                    <form action="{% url 'donate_project' project.id %}" method="post" id="donta">
                                                         {% csrf_token %}
                                                         <div class="form-group">
                                                             <label for="recipient-name" class="col-form-label">Recipient To :</label>
