@@ -17,7 +17,8 @@ class ProjectForm(ModelForm):
                   'details', 'tags', 'target', 'start_date', 'end_date']
         widgets = {
             'start_date': DateInput(),
-            'end_date': DateInput()
+            'end_date': DateInput(),
+            'owner': forms.HiddenInput() 
         }
 
 
@@ -35,4 +36,4 @@ class DonationForm(ModelForm):
     class Meta:
         model = Donation
         fields = ['amount', 'user' , 'project' ]
-        widgets = {'project': forms.HiddenInput()}
+        widgets = {'project': forms.HiddenInput() , 'user': forms.HiddenInput()}

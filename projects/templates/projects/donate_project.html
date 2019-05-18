@@ -26,7 +26,7 @@
         <div class="form-group">
           <div class="row">
             <div class="col-md-2">
-              <label class="control-label"> {% if field.label != "Project" %} {{ field.label }}: {% endif %} </label>
+              <label class="control-label"> {% if field.label != "Project" or field.label != "User" %} {{ field.label }}: {% endif %} </label>
             </div>
             <div class="col-md-10">
               {{ field }}
