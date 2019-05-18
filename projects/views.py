@@ -33,17 +33,19 @@ def createProject(request):
                     photo.save()
 
             # user profile page
-            return redirect("index")
+            return redirect("projects_index")
             # return HttpResponse("project added and redirect to user profile")
     else:
         picture_form = ImageFormSet(queryset=ProjectPictures.objects.none())
-        project_form = ProjectForm(initial={"owner":request.session['_auth_user_id']})
+        project_form = ProjectForm(
+            initial={"owner": request.session['_auth_user_id']})
         return render(request, 'projects/create_project.html/', {'project_form': project_form, 'picture_form': picture_form})
 
 
 # fatema
 
 def project_details(request, id):
+    add_rate = 0
     project = Project.objects.get(id=id)
     rates = list(project.projectrate_set.values())
     avgRate = ProjectRate.objects.filter(project_id=id).aggregate(Avg('rate'))
@@ -60,6 +62,7 @@ def project_details(request, id):
     # Adding Comments
     if request.method == 'GET':
         commentForm = AddCommentForm()
+        # global add_rate
         add_rate = AddRate()
     else:
         commentForm = AddCommentForm(request.POST)
@@ -157,9 +160,11 @@ def projectDonate(request, id):
 
             print(result)
             return redirect("projects_index")
-            # return HttpResponse("donations has been added and redirect to user profile")
+            # return HttpResponse("donations has been added and redirect to
+            # user profile")
     else:
-        donate_form = DonationForm(initial={"project": id , "user":request.session['_auth_user_id']})
+        donate_form = DonationForm(
+            initial={"project": id, "user": request.session['_auth_user_id']})
         return render(request, 'projects/donate_project.html/', {'donate_form': donate_form, "project":  project})
 
 

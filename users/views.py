@@ -25,14 +25,15 @@ def signup_new_user(request):
             formprofile = profileFormEdit(request.POST, request.FILES)
             if formuser.is_valid() and formprofile.is_valid():
                 formuser.save()
-                userreg = User.objects.latest('id')
+                userreg = id = User.objects.latest('id')
                 userreg.is_active = False
                 userreg.save()
                 newprof = Account.objects.get(user=userreg)
                 newprof.phone = formprofile.cleaned_data.get("phone")
                 newprof.image = formprofile.cleaned_data.get("image")
                 newprof.save()
-                request.session['id'] = User.objects.latest('id')
+                # request.session['id'] = User.objects.latest('id')
+                
                 current_site = get_current_site(request)
                 mail_subject = 'Projects Donation Site - Activation Email'
                 message = render_to_string('users/acc_active_email.html', {
@@ -49,6 +50,7 @@ def signup_new_user(request):
                 messages.success(request, "sucess Register -- Welcom -- "
                                           "Please confirm your email address to complete the registration  ")
                 return HttpResponse('<center><h1>A confirmation Email was sent to your email .. </h1></center>')
+
             else:
                 messages.error(request, formuser.errors)
                 messages.error(request, formprofile.errors)
